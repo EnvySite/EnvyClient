@@ -74,6 +74,17 @@
       padding: 0 20px;
     }
 
+    /* --- Анимация появления --- */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* --- Шапка (Header) --- */
     header {
       position: fixed;
@@ -81,7 +92,7 @@
       left: 0;
       width: 100%;
       z-index: 100;
-      padding: 0 12px; /* Уменьшил отступы для мобилок */
+      padding: 0 12px;
       transition: transform 0.3s ease;
     }
 
@@ -93,7 +104,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: 30px;
-      padding: 8px 12px; /* Сделал чуть компактнее */
+      padding: 8px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -106,9 +117,8 @@
       gap: 8px;
     }
 
-    /* Кнопка мобильного меню (Бургер) */
     .menu-btn {
-      width: 36px; /* Чуть меньше */
+      width: 36px;
       height: 36px;
       border-radius: 50%;
       background: var(--surface);
@@ -138,11 +148,11 @@
       text-decoration: none;
       color: var(--text-main);
       font-weight: 600;
-      font-size: 1rem; /* Уменьшил шрифт логотипа */
+      font-size: 1rem;
     }
 
     .logo img {
-      height: 28px; /* Логотип чуть меньше */
+      height: 28px;
       width: 28px;
       border-radius: 8px;
       object-fit: cover;
@@ -153,10 +163,10 @@
       background: var(--primary);
       color: #000;
       text-decoration: none;
-      padding: 8px 14px; /* Сделал кнопку уже */
+      padding: 8px 14px;
       border-radius: 20px;
       font-weight: 600;
-      font-size: 0.85rem; /* Уменьшил текст */
+      font-size: 0.85rem;
       transition: all 0.3s ease;
       box-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
       white-space: nowrap;
@@ -293,7 +303,7 @@
       margin-bottom: 32px;
     }
 
-    /* --- Галерея (Вкладки) --- */
+    /* --- Галерея --- */
     .gallery-tabs {
       display: flex;
       overflow-x: auto;
@@ -355,6 +365,7 @@
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
+    /* Красивые иконки: делаем их фиолетовыми и убираем белый фон */
     .card-icon {
       width: 48px;
       height: 48px;
@@ -364,10 +375,18 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
-      padding: 8px;
+      box-shadow: inset 0 0 15px rgba(192, 132, 252, 0.1);
+      padding: 10px;
     }
 
-    .card-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .card-icon img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; 
+      /* Этот фильтр делает твои белые иконки фиолетовыми и убирает белый фон! */
+      filter: invert(75%) sepia(50%) saturate(3000%) hue-rotate(230deg) brightness(110%) contrast(110%);
+      opacity: 0.9;
+    }
 
     .card h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-main); }
     .card p { color: var(--text-muted); font-size: 0.95rem; }
@@ -532,10 +551,10 @@
   </section>
 
   <section class="section container" id="gallery">
-    <h2 class="section-title">Галерея</h2>
-    <p class="section-subtitle">Посмотри, как выглядит клиент</p>
+    <h2 class="section-title fade-in">Галерея</h2>
+    <p class="section-subtitle fade-in">Посмотри, как выглядит клиент</p>
 
-    <div class="gallery-tabs">
+    <div class="gallery-tabs fade-in">
       <button class="tab-btn active" data-target="screen1.png">Меню</button>
       <button class="tab-btn" data-target="screen2.png">Avoid</button>
       <button class="tab-btn" data-target="screen3.png">TAS</button>
@@ -543,32 +562,32 @@
       <button class="tab-btn" data-target="screen4.png">Visuals</button>
     </div>
 
-    <div class="gallery-display">
+    <div class="gallery-display fade-in">
       <img src="screen1.png" id="mainScreenImage" alt="Скриншот клиента">
     </div>
   </section>
 
   <section class="section container" id="features">
-    <h2 class="section-title">Функционал</h2>
-    <p class="section-subtitle">Работает идеально</p>
+    <h2 class="section-title fade-in">Функционал</h2>
+    <p class="section-subtitle fade-in">Работает идеально</p>
 
     <div class="grid">
-      <div class="card">
+      <div class="card fade-in">
         <div class="card-icon"><img src="aim.png" alt="Aimbot"></div>
         <h3>Aimbot</h3>
         <p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent и поддержкой всех видов оружия.</p>
       </div>
-      <div class="card">
+      <div class="card fade-in">
         <div class="card-icon"><img src="av.png" alt="Avoid System"></div>
         <h3>Avoid System</h3>
         <p>Авто-спасение от опасных тайлов. Режимы Legit и Blatant, Rescue Aim.</p>
       </div>
-      <div class="card">
+      <div class="card fade-in">
         <div class="card-icon"><img src="tas.png" alt="TAS"></div>
         <h3>TAS</h3>
         <p>Tool-Assisted Speedrun. Запись, пауза, воспроизведение и импорт .tas файлов.</p>
       </div>
-      <div class="card">
+      <div class="card fade-in">
         <div class="card-icon"><img src="vis.png" alt="Visuals"></div>
         <h3>Visuals</h3>
         <p>Ушки, хвост, крылья, кагуне, эффекты, кастомные лица и анимации AFK.</p>
@@ -577,28 +596,28 @@
   </section>
 
   <section class="section container" id="faq">
-    <h2 class="section-title">FAQ</h2>
-    <p class="section-subtitle">Часто задаваемые вопросы</p>
+    <h2 class="section-title fade-in">FAQ</h2>
+    <p class="section-subtitle fade-in">Часто задаваемые вопросы</p>
 
-    <div class="faq-item">
+    <div class="faq-item fade-in">
       <button class="faq-question">Это безопасно?</button>
       <div class="faq-answer"><p>Да, клиент полностью безопасен. Мы не собираем ваши личные данные. Антивирус может ругаться на любой софт такого типа, поэтому рекомендуется добавить в исключения.</p></div>
     </div>
-    <div class="faq-item">
+    <div class="faq-item fade-in">
       <button class="faq-question">Как установить клиент?</button>
       <div class="faq-answer"><p>Скачайте архив для вашей ОС, распакуйте в любую папку и запустите файл <b>EnvyClient.exe</b>. Установка не требуется.</p></div>
     </div>
-    <div class="faq-item">
+    <div class="faq-item fade-in">
       <button class="faq-question">Будут ли обновления?</button>
       <div class="faq-answer"><p>Конечно! Мы постоянно работаем над улучшением функционала и обходом новых защит. Следите за обновлениями в нашем Telegram-канале.</p></div>
     </div>
   </section>
 
   <section class="section container" id="download">
-    <h2 class="section-title">Скачать</h2>
-    <p class="section-subtitle">Выберите свою платформу</p>
+    <h2 class="section-title fade-in">Скачать</h2>
+    <p class="section-subtitle fade-in">Выберите свою платформу</p>
 
-    <div class="download-buttons">
+    <div class="download-buttons fade-in">
       <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="btn-platform" target="_blank" rel="noopener">
         <span>Windows (.zip)</span>
         <span class="icon">💻</span>
@@ -698,7 +717,7 @@
       });
     });
 
-    // Скрытие шапки
+    // Скрытие шапки при скролле
     let lastScroll = 0;
     const header = document.getElementById('mainHeader');
     window.addEventListener('scroll', () => {
@@ -708,6 +727,19 @@
       else header.style.transform = 'translateY(0)';
       lastScroll = currentScroll;
     });
+
+    // Анимация появления элементов (Fade-in)
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>

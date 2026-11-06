@@ -40,6 +40,11 @@
         radial-gradient(circle at 0% 0%, rgba(192, 132, 252, 0.15), transparent 40%),
         radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.15), transparent 40%);
       background-attachment: fixed;
+      /* Запрет выделения текста */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
     /* Живой фон */
@@ -441,6 +446,20 @@
 
   <!-- СКРИПТЫ -->
   <script>
+    // --- ЗАЩИТА КОДА ---
+    // 1. Запрет правой кнопки мыши
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    
+    // 2. Запрет F12, Ctrl+U, Ctrl+Shift+I
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123) return false; // F12
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+    };
+
+    // --- ОСНОВНАЯ ЛОГИКА САЙТА ---
     function showSite(type) {
       document.getElementById('splashScreen').classList.add('hidden');
       document.getElementById('desktopSite').classList.add('hidden');

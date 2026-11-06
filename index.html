@@ -126,7 +126,7 @@
     .mobile-btn-platform { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s; }
 
     /* =========================================
-       ПК ВЕРСИЯ (АДАПТИРОВАННАЯ ПОД ТЕЛЕФОН)
+       ПК ВЕРСИЯ
        ========================================= */
     #desktopSite { min-height: 100vh; }
     
@@ -137,11 +137,8 @@
     .desktop-nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
 
     .desktop-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; padding: 100px 0; min-height: 80vh; }
-    
-    /* ПК заголовок */
     .desktop-hero-text h1 { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 30px; letter-spacing: -2px; filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.3)); text-transform: uppercase; }
     .desktop-hero-text p { font-size: 1.4rem; color: var(--text-muted); margin-bottom: 50px; max-width: 500px; line-height: 1.6; font-weight: 500; }
-    
     .desktop-main-btn { background: var(--primary); color: #000; padding: 20px 50px; border-radius: 16px; font-size: 1.2rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 10px 40px var(--primary-glow); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
     .desktop-main-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 50px rgba(192, 132, 252, 0.6); }
 
@@ -194,55 +191,22 @@
     .desktop-btn-platform { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 50px; border-radius: 20px; text-decoration: none; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 15px; transition: all 0.3s; backdrop-filter: blur(10px); }
     .desktop-btn-platform:hover { background: rgba(192, 132, 252, 0.15); border-color: var(--primary); transform: translateY(-5px); color: var(--primary); box-shadow: 0 15px 30px rgba(192, 132, 252, 0.2); }
 
-    /* =========================================
-       АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНОВ (ЧТОБЫ ПК-ВЕРСИЯ НЕ ЛОМАЛАСЬ)
-       ========================================= */
     @media (max-width: 900px) {
-      .desktop-header { display: none; } /* Прячем ПК-меню на телефоне */
-      
-      .desktop-hero { 
-        grid-template-columns: 1fr; 
-        padding: 120px 0 60px; 
-        text-align: center; 
-        min-height: auto; 
-      }
-      
-      .desktop-hero-text h1 { 
-        font-size: 3rem; /* Уменьшаем заголовок */
-        margin-bottom: 20px; 
-      }
-      
-      .desktop-hero-text p { 
-        font-size: 1.1rem; 
-        margin: 0 auto 30px; 
-      }
-      
-      .desktop-main-btn {
-        width: 100%;
-        max-width: 300px;
-        padding: 18px 20px;
-        font-size: 1.1rem;
-      }
-
-      .desktop-hero-image { 
-        display: none; /* Скрываем 3D картинку на телефоне */
-      }
-
+      .desktop-header { display: none; }
+      .desktop-hero { grid-template-columns: 1fr; padding: 120px 0 60px; text-align: center; min-height: auto; }
+      .desktop-hero-text h1 { font-size: 3rem; margin-bottom: 20px; }
+      .desktop-hero-text p { font-size: 1.1rem; margin: 0 auto 30px; }
+      .desktop-main-btn { width: 100%; max-width: 300px; padding: 18px 20px; font-size: 1.1rem; }
+      .desktop-hero-image { display: none; }
       .desktop-section { padding: 60px 0; }
       .desktop-section-title { font-size: 2.5rem; }
       .desktop-grid { grid-template-columns: 1fr; }
-      
       .wiki-grid { grid-template-columns: 1fr; }
-      
       .security-box { flex-direction: column; text-align: center; padding: 30px; gap: 20px; }
-      
       .desktop-download-buttons { flex-direction: column; align-items: center; }
       .desktop-btn-platform { width: 100%; max-width: 300px; padding: 20px; font-size: 1rem; }
     }
 
-    /* =========================================
-       ПАСХАЛКА
-       ========================================= */
     #easterEgg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 1s; padding: 20px; text-align: center; }
     #easterEgg.active { opacity: 1; visibility: visible; }
     .egg-text { font-size: 2.5rem; font-weight: 900; color: var(--primary); text-align: center; text-shadow: 0 0 30px var(--primary); margin-bottom: 20px; animation: shake 0.5s infinite; }
@@ -361,9 +325,9 @@
     <section class="mobile-section mobile-container" id="m-download">
       <h2 class="mobile-section-title gradient-text fade-up">Скачать</h2>
       <div class="mobile-download-buttons fade-up">
-        <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="mobile-btn-platform"><span>Windows</span><span>💻</span></a>
-        <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="mobile-btn-platform"><span>Android</span><span>📱</span></a>
-        <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="mobile-btn-platform"><span>Linux</span><span>🐧</span></a>
+        <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="mobile-btn-platform" target="_blank" rel="noopener"><span>Windows</span><span>💻</span></a>
+        <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="mobile-btn-platform" target="_blank" rel="noopener"><span>Android</span><span>📱</span></a>
+        <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="mobile-btn-platform" target="_blank" rel="noopener"><span>Linux</span><span>🐧</span></a>
       </div>
     </section>
     
@@ -393,7 +357,6 @@
     <section class="container desktop-hero">
       <div class="desktop-hero-text">
         <div class="badge fade-up" style="margin-bottom: 30px;"><img src="images.png" alt="DDNet"> DDNet Client</div>
-        <!-- ТУТ ИЗМЕНЕН ТЕКСТ -->
         <h1 class="gradient-text fade-up">GOOD PC<br>CLIENT</h1>
         <p class="fade-up">Хороший чит для DDNet на компьютере. Продвинутый Aimbot, система Avoid и огромное количество визуальных настроек.</p>
         <div class="fade-up">
@@ -455,9 +418,9 @@
         <h2 class="gradient-text fade-up desktop-section-title" style="margin-bottom: 20px;">Скачать</h2>
         <p class="fade-up" style="color: var(--text-muted); font-size: 1.2rem; font-weight: 500;">Выберите вашу операционную систему</p>
         <div class="desktop-download-buttons fade-up">
-          <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">💻</span> Windows (.zip)</a>
-          <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">📱</span> Android (.apk)</a>
-          <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">🐧</span> Linux (.tar.gz)</a>
+          <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="desktop-btn-platform" target="_blank" rel="noopener"><span style="font-size: 1.8rem;">💻</span> Windows (.zip)</a>
+          <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="desktop-btn-platform" target="_blank" rel="noopener"><span style="font-size: 1.8rem;">📱</span> Android (.apk)</a>
+          <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="desktop-btn-platform" target="_blank" rel="noopener"><span style="font-size: 1.8rem;">🐧</span> Linux (.tar.gz)</a>
         </div>
         <div class="fade-up" style="margin-top: 60px; color: var(--text-muted); font-weight: 500;">
           Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:var(--primary); text-decoration:none; font-weight: 700;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:var(--primary); text-decoration:none; font-weight: 700;">@wakizashu</a>

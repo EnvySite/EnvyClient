@@ -13,7 +13,7 @@
 
   <style>
     /* =========================================
-       ОБЩИЕ СТИЛИ И ПЕРЕМЕННЫЕ
+       ОБЩИЕ СТИЛИ
        ========================================= */
     :root {
       --bg-color: #050508;
@@ -42,133 +42,57 @@
       background-attachment: fixed;
     }
 
-    /* Живой фон с частицами */
-    .ambient-bg {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: -2; overflow: hidden; pointer-events: none;
-    }
-    .blob {
-      position: absolute; filter: blur(100px); border-radius: 50%;
-      opacity: 0.4; animation: float 20s infinite ease-in-out alternate;
-    }
+    /* Живой фон */
+    .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; overflow: hidden; pointer-events: none; }
+    .blob { position: absolute; filter: blur(100px); border-radius: 50%; opacity: 0.4; animation: float 20s infinite ease-in-out alternate; }
     .blob-1 { width: 500px; height: 500px; background: var(--primary); top: -10%; left: -10%; }
     .blob-2 { width: 600px; height: 600px; background: var(--secondary); bottom: -20%; right: -10%; animation-delay: -5s; }
     .blob-3 { width: 400px; height: 400px; background: #e879f9; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.2; }
+    @keyframes float { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(50px, 30px) scale(1.1); } 100% { transform: translate(-30px, 60px) scale(0.9); } }
 
-    @keyframes float {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, 30px) scale(1.1); }
-      100% { transform: translate(-30px, 60px) scale(0.9); }
-    }
-
-    /* Свечение за курсором на ПК */
-    .cursor-glow {
-      position: fixed; width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%);
-      border-radius: 50%; pointer-events: none; z-index: -1;
-      transform: translate(-50%, -50%); transition: opacity 0.3s;
-    }
+    /* Свечение за курсором */
+    .cursor-glow { position: fixed; width: 400px; height: 400px; background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: -1; transform: translate(-50%, -50%); transition: opacity 0.3s; }
 
     .hidden { display: none !important; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
 
-    /* Общие анимации */
-    .fade-up {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    /* Анимации */
+    .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    /* Текст с переливом */
-    .gradient-text {
-      background: linear-gradient(to right, #ffffff, #c084fc, #818cf8, #ffffff);
-      background-size: 300% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 4s linear infinite;
-    }
+    .gradient-text { background: linear-gradient(to right, #ffffff, #c084fc, #818cf8, #ffffff); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; }
     @keyframes shine { to { background-position: 300% center; } }
 
     /* =========================================
-       ЭКРАН ВЫБОРА (SPLASH)
+       ЭКРАН ВЫБОРА
        ========================================= */
-    #splashScreen {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: var(--bg-color); z-index: 9999;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      transition: opacity 0.5s ease;
-    }
-
-    .splash-logo {
-      width: 120px; height: 120px; border-radius: 30px;
-      box-shadow: 0 0 60px var(--primary-glow), inset 0 0 20px rgba(255,255,255,0.2);
-      margin-bottom: 30px;
-      animation: pulseGlow 2s infinite alternate;
-    }
-
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 30px var(--primary-glow); transform: scale(1); }
-      100% { box-shadow: 0 0 80px var(--primary), 0 0 20px #fff; transform: scale(1.05); }
-    }
-
+    #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .splash-logo { width: 120px; height: 120px; border-radius: 30px; box-shadow: 0 0 60px var(--primary-glow), inset 0 0 20px rgba(255,255,255,0.2); margin-bottom: 30px; animation: pulseGlow 2s infinite alternate; cursor: pointer; }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 30px var(--primary-glow); transform: scale(1); } 100% { box-shadow: 0 0 80px var(--primary), 0 0 20px #fff; transform: scale(1.05); } }
     .splash-title { font-size: 3rem; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
     .splash-sub { color: var(--text-muted); margin-bottom: 50px; font-size: 1.2rem; font-weight: 500; }
     .splash-buttons { display: flex; gap: 30px; }
-
-    .splash-btn {
-      background: var(--surface); border: 1px solid var(--border); color: var(--text-main);
-      padding: 24px 50px; border-radius: 24px; font-size: 1.2rem; font-weight: 700;
-      cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: flex; flex-direction: column; align-items: center; gap: 15px;
-      backdrop-filter: blur(10px); position: relative; overflow: hidden;
-    }
-
-    /* Блик на кнопках */
-    .splash-btn::before {
-      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-      transform: rotate(45deg); transition: all 0.5s; opacity: 0;
-    }
-
+    .splash-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 50px; border-radius: 24px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 15px; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+    .splash-btn::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); transform: rotate(45deg); transition: all 0.5s; opacity: 0; }
     .splash-btn:hover::before { opacity: 1; left: 100%; }
-
-    .splash-btn:hover {
-      background: var(--primary-dim); border-color: var(--primary);
-      transform: translateY(-10px) scale(1.05); box-shadow: 0 20px 40px rgba(192, 132, 252, 0.3);
-    }
-
+    .splash-btn:hover { background: rgba(192, 132, 252, 0.1); border-color: var(--primary); transform: translateY(-10px) scale(1.05); box-shadow: 0 20px 40px rgba(192, 132, 252, 0.3); }
     .splash-btn svg { width: 40px; height: 40px; fill: var(--primary); filter: drop-shadow(0 0 10px var(--primary)); }
 
     /* =========================================
        МОБИЛЬНАЯ ВЕРСИЯ
        ========================================= */
-    .mobile-header {
-      position: fixed; top: 16px; left: 0; width: 100%; z-index: 100; padding: 0 12px;
-    }
-    .mobile-header-inner {
-      max-width: 600px; margin: 0 auto; background: rgba(18, 18, 22, 0.6);
-      backdrop-filter: blur(20px); border: 1px solid var(--border);
-      border-radius: 30px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+    .mobile-header { position: fixed; top: 16px; left: 0; width: 100%; z-index: 100; padding: 0 12px; }
+    .mobile-header-inner { max-width: 600px; margin: 0 auto; background: rgba(18, 18, 22, 0.6); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 30px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .mobile-header-left { display: flex; align-items: center; gap: 8px; }
-    .menu-btn {
-      width: 36px; height: 36px; border-radius: 50%; background: var(--surface);
-      border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer;
-    }
+    .menu-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer; }
     .menu-btn span { display: block; width: 16px; height: 2px; background: var(--text-main); border-radius: 2px; }
-    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 1rem; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 1rem; cursor: pointer; }
     .logo img { height: 28px; width: 28px; border-radius: 8px; object-fit: cover; box-shadow: 0 0 15px var(--primary-glow); }
     .header-btn { background: var(--primary); color: #000; text-decoration: none; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
 
-    .mobile-nav-menu {
-      position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
-      background: var(--surface); z-index: 101; padding: 30px 20px;
-      transition: left 0.4s; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px;
-      backdrop-filter: blur(30px);
-    }
+    .mobile-nav-menu { position: fixed; top: 0; left: -100%; width: 280px; height: 100vh; background: var(--surface); z-index: 101; padding: 30px 20px; transition: left 0.4s; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; backdrop-filter: blur(30px); overflow-y: auto; }
     .mobile-nav-menu.active { left: 0; }
-    .mobile-nav-menu a { color: var(--text-main); text-decoration: none; font-size: 1.1rem; font-weight: 600; padding: 12px 16px; border-radius: 12px; }
+    .mobile-nav-menu a { color: var(--text-main); text-decoration: none; font-size: 1.1rem; font-weight: 600; padding: 12px 16px; border-radius: 12px; display: block; }
     .mobile-nav-menu a:hover { background: rgba(192, 132, 252, 0.2); color: var(--primary); }
 
     .mobile-container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
@@ -190,7 +114,6 @@
 
     .mobile-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
     .mobile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; backdrop-filter: blur(10px); transition: transform 0.3s; }
-    .mobile-card:active { transform: scale(0.98); }
     .mobile-card-icon { width: 54px; height: 54px; border-radius: 16px; background: rgba(192, 132, 252, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; padding: 12px; box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2); }
     .mobile-card-icon img { width: 100%; height: 100%; object-fit: contain; filter: invert(65%) sepia(80%) saturate(5000%) hue-rotate(240deg) brightness(120%) contrast(100%); mix-blend-mode: screen; }
     .mobile-card h3 { font-size: 1.3rem; margin-bottom: 8px; font-weight: 700; }
@@ -198,76 +121,118 @@
 
     .mobile-download-buttons { display: flex; flex-direction: column; gap: 12px; }
     .mobile-btn-platform { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s; }
-    .mobile-btn-platform:active { background: var(--surface-hover); }
 
     /* =========================================
-       ПК ВЕРСИЯ (ТОПОВЫЙ ДИЗАЙН)
+       ПК ВЕРСИЯ
        ========================================= */
     #desktopSite { min-height: 100vh; }
     
-    .desktop-header {
-      padding: 20px 0; border-bottom: 1px solid var(--border);
-      background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(20px);
-      position: sticky; top: 0; z-index: 100;
-    }
+    .desktop-header { padding: 20px 0; border-bottom: 1px solid var(--border); background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; }
     .desktop-header-inner { display: flex; justify-content: space-between; align-items: center; }
     .desktop-nav { display: flex; gap: 30px; }
     .desktop-nav a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 1rem; transition: color 0.3s; }
     .desktop-nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
 
-    .desktop-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; padding: 120px 0; min-height: 90vh; }
+    .desktop-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; padding: 100px 0; min-height: 80vh; }
     .desktop-hero-text h1 { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 30px; letter-spacing: -2px; filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.3)); }
     .desktop-hero-text p { font-size: 1.4rem; color: var(--text-muted); margin-bottom: 50px; max-width: 500px; line-height: 1.6; font-weight: 500; }
     .desktop-main-btn { background: var(--primary); color: #000; padding: 20px 50px; border-radius: 16px; font-size: 1.2rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px var(--primary-glow); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
-    .desktop-main-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: all 0.5s; }
-    .desktop-main-btn:hover::before { left: 100%; }
     .desktop-main-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 50px rgba(192, 132, 252, 0.6); }
 
     .desktop-hero-image { perspective: 1000px; }
     .desktop-hero-image img { width: 100%; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(192, 132, 252, 0.2); transform: rotateY(-15deg) rotateX(5deg); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .desktop-hero-image img:hover { transform: rotateY(0) rotateX(0) scale(1.05); }
 
-    .desktop-features { padding: 120px 0; background: rgba(10, 10, 15, 0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 60px; }
+    /* Общие стили для секций ПК */
+    .desktop-section { padding: 100px 0; }
+    .desktop-section-title { font-size: 3.5rem; font-weight: 900; text-align: center; margin-bottom: 10px; letter-spacing: -1px; }
+    .desktop-section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.2rem; font-weight: 500; margin-bottom: 60px; }
+
+    /* Возможности */
+    .desktop-features { background: rgba(10, 10, 15, 0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
     .desktop-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 40px; display: flex; align-items: flex-start; gap: 25px; transition: all 0.4s; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
-    .desktop-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0; transition: opacity 0.3s; }
     .desktop-card:hover { border-color: rgba(192, 132, 252, 0.4); transform: translateY(-10px); background: var(--surface-hover); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-    .desktop-card:hover::after { opacity: 1; }
     .desktop-card-icon { width: 70px; height: 70px; border-radius: 20px; background: rgba(192, 132, 252, 0.1); display: flex; align-items: center; justify-content: center; padding: 15px; flex-shrink: 0; overflow: hidden; box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2); }
     .desktop-card-icon img { width: 100%; height: 100%; filter: invert(65%) sepia(80%) saturate(5000%) hue-rotate(240deg) brightness(120%) contrast(100%); mix-blend-mode: screen; }
     .desktop-card h3 { font-size: 1.6rem; margin-bottom: 12px; font-weight: 800; }
     .desktop-card p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; }
 
-    .desktop-download { padding: 120px 0; text-align: center; }
-    .desktop-download h2 { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; }
-    .desktop-download-buttons { display: flex; justify-content: center; gap: 25px; margin-top: 50px; }
+    /* =========================================
+       ГАЙДЫ / МИНИ-ВИКИ (МОДАЛКА)
+       ========================================= */
+    .wiki-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 900px) { .wiki-grid { grid-template-columns: 1fr; } }
+    
+    .wiki-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 30px; cursor: pointer; transition: all 0.3s; text-align: center; }
+    .wiki-card:hover { background: rgba(192, 132, 252, 0.1); border-color: var(--primary); transform: translateY(-5px); }
+    .wiki-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: var(--primary); }
+    .wiki-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* Модальное окно */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content { background: var(--surface); border: 1px solid var(--primary); border-radius: 24px; width: 90%; max-width: 600px; padding: 40px; position: relative; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(192, 132, 252, 0.3); }
+    .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; transition: color 0.3s; }
+    .modal-close:hover { color: var(--primary); }
+    .modal-content h2 { font-size: 2rem; margin-bottom: 20px; color: var(--primary); }
+    .modal-content p { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 15px; line-height: 1.7; }
+    .modal-content ul { margin-left: 20px; color: var(--text-muted); margin-bottom: 20px; }
+    .modal-content li { margin-bottom: 10px; }
+
+    /* =========================================
+       ЧЕНДЖЛОГ (ИСТОРИЯ ОБНОВЛЕНИЙ)
+       ========================================= */
+    .changelog-container { max-width: 800px; margin: 0 auto; position: relative; padding-left: 30px; }
+    .changelog-container::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--border); }
+    .changelog-item { position: relative; margin-bottom: 40px; }
+    .changelog-item::before { content: ''; position: absolute; left: -36px; top: 5px; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+    .changelog-date { color: var(--primary); font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
+    .changelog-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
+    .changelog-desc { color: var(--text-muted); font-size: 1rem; }
+
+    /* =========================================
+       БЕЗОПАСНОСТЬ
+       ========================================= */
+    .security-box { background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(99, 102, 241, 0.1)); border: 1px solid var(--primary); border-radius: 24px; padding: 50px; display: flex; align-items: center; gap: 40px; max-width: 900px; margin: 0 auto; }
+    .security-icon { font-size: 5rem; filter: drop-shadow(0 0 20px var(--primary)); flex-shrink: 0; }
+    .security-text h3 { font-size: 2rem; margin-bottom: 15px; }
+    .security-text p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; }
+    @media (max-width: 768px) { .security-box { flex-direction: column; text-align: center; padding: 30px; gap: 20px; } }
+
+    /* =========================================
+       FAQ (АККОРДЕОН)
+       ========================================= */
+    .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; overflow: hidden; backdrop-filter: blur(10px); }
+    .faq-question { width: 100%; text-align: left; background: none; border: none; color: var(--text-main); font-family: inherit; font-size: 1.1rem; font-weight: 700; padding: 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .faq-question::after { content: '+'; font-size: 1.8rem; color: var(--primary); transition: transform 0.3s; }
+    .faq-item.active .faq-question::after { transform: rotate(45deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 24px; color: var(--text-muted); font-size: 1rem; line-height: 1.6; }
+
+    /* Скачивание */
+    .desktop-download { padding: 100px 0; text-align: center; }
+    .desktop-download-buttons { display: flex; justify-content: center; gap: 25px; margin-top: 40px; }
     .desktop-btn-platform { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 50px; border-radius: 20px; text-decoration: none; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 15px; transition: all 0.3s; backdrop-filter: blur(10px); }
     .desktop-btn-platform:hover { background: rgba(192, 132, 252, 0.15); border-color: var(--primary); transform: translateY(-5px); color: var(--primary); box-shadow: 0 15px 30px rgba(192, 132, 252, 0.2); }
 
-    @media (max-width: 900px) {
-      .desktop-hero { grid-template-columns: 1fr; padding: 60px 0; text-align: center; }
-      .desktop-hero-text h1 { font-size: 3.5rem; }
-      .desktop-hero-text p { margin: 0 auto 30px; }
-      .desktop-hero-image { display: none; }
-      .desktop-grid { grid-template-columns: 1fr; }
-      .desktop-nav { display: none; }
-      .desktop-download-buttons { flex-direction: column; align-items: center; }
-    }
+    /* =========================================
+       ПАСХАЛКА (СЕКРЕТНЫЙ ЭКРАН)
+       ========================================= */
+    #easterEgg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 1s; }
+    #easterEgg.active { opacity: 1; visibility: visible; }
+    .egg-text { font-size: 3rem; font-weight: 900; color: var(--primary); text-align: center; text-shadow: 0 0 30px var(--primary); margin-bottom: 20px; animation: shake 0.5s infinite; }
+    .egg-sub { font-size: 1.5rem; color: white; margin-bottom: 40px; }
+    @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
   </style>
 </head>
 <body>
 
-  <!-- Фоновые эффекты -->
-  <div class="ambient-bg">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-  </div>
+  <div class="ambient-bg"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
   <div class="cursor-glow" id="cursorGlow"></div>
 
   <!-- ЭКРАН ВЫБОРА -->
   <div id="splashScreen">
-    <img src="logo.png" alt="Logo" class="splash-logo">
+    <img src="logo.png" alt="Logo" class="splash-logo" id="secretLogo">
     <h1 class="splash-title gradient-text">EnvyClient</h1>
     <p class="splash-sub">Выберите ваше устройство</p>
     <div class="splash-buttons">
@@ -282,6 +247,13 @@
     </div>
   </div>
 
+  <!-- ПАСХАЛКА -->
+  <div id="easterEgg">
+    <div class="egg-text">ЧИТЫ ЭТО ПЛОХО!</div>
+    <div class="egg-sub">Шутка. Ты нашел секрет. Приятной игры! 😉</div>
+    <button class="splash-btn" onclick="document.getElementById('easterEgg').classList.remove('active')" style="padding: 15px 30px; font-size: 1rem; color: var(--primary);">Вернуться</button>
+  </div>
+
   <!-- МОБИЛЬНАЯ ВЕРСИЯ -->
   <div id="mobileSite" class="hidden">
     <nav class="mobile-nav-menu" id="navMenu">
@@ -289,15 +261,17 @@
       <a href="#m-hero" onclick="toggleMenu()">Главная</a>
       <a href="#m-gallery" onclick="toggleMenu()">Скриншоты</a>
       <a href="#m-features" onclick="toggleMenu()">Функционал</a>
-      <a href="#m-download" onclick="toggleMenu()">Скачать</a>
-      <a href="#" onclick="toggleMenu(); resetPlatform();" style="margin-top:auto; color: var(--primary);">Сменить устройство</a>
+      <a href="#m-wiki" onclick="toggleMenu()">Гайды</a>
+      <a href="#m-changelog" onclick="toggleMenu()">Обновления</a>
+      <a href="#m-faq" onclick="toggleMenu()">FAQ</a>
+      <a href="#" onclick="toggleMenu(); resetPlatform();" style="margin-top:20px; color: var(--primary);">Сменить устройство</a>
     </nav>
 
     <header class="mobile-header">
       <div class="mobile-header-inner">
         <div class="mobile-header-left">
           <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
-          <a href="#" class="logo"><img src="logo.png" alt="Logo"> EnvyClient</a>
+          <a href="#" class="logo" onclick="logoClick(event)"><img src="logo.png" alt="Logo"> EnvyClient</a>
         </div>
         <a href="https://t.me/EnvyClient1337" target="_blank" class="header-btn">Telegram</a>
       </div>
@@ -335,6 +309,51 @@
       </div>
     </section>
 
+    <!-- Гайды (Мобилки) -->
+    <section class="mobile-section mobile-container" id="m-wiki">
+      <h2 class="mobile-section-title gradient-text fade-up">Гайды</h2>
+      <div class="wiki-grid fade-up">
+        <div class="wiki-card" onclick="openModal('install')"><h3>Установка</h3><p>Как правильно запустить</p></div>
+        <div class="wiki-card" onclick="openModal('aimbot')"><h3>Настройка Aimbot</h3><p>Идеальные настройки</p></div>
+        <div class="wiki-card" onclick="openModal('avoid')"><h3>Что такое Avoid</h3><p>Спасение от заморозки</p></div>
+      </div>
+    </section>
+
+    <!-- Ченджлог (Мобилки) -->
+    <section class="mobile-section mobile-container" id="m-changelog">
+      <h2 class="mobile-section-title gradient-text fade-up">Обновления</h2>
+      <div class="changelog-container fade-up" style="padding-left: 20px;">
+        <div class="changelog-item">
+          <div class="changelog-date">Вчера</div>
+          <div class="changelog-title">v2.0.1</div>
+          <div class="changelog-desc">Исправлен краш при заходе на сервер. Улучшен Aimbot.</div>
+        </div>
+        <div class="changelog-item">
+          <div class="changelog-date">Неделю назад</div>
+          <div class="changelog-title">v2.0.0</div>
+          <div class="changelog-desc">Глобальное обновление интерфейса и новые Visuals.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Безопасность (Мобилки) -->
+    <section class="mobile-section mobile-container">
+      <div class="security-box fade-up" style="padding: 30px;">
+        <div class="security-icon">🛡️</div>
+        <div class="security-text" style="text-align: center;">
+          <h3>Безопасность</h3>
+          <p style="font-size: 0.95rem;">Если антивирус ругается, добавьте папку с клиентом в исключения. Это нормальная реакция на любой софт.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ (Мобилки) -->
+    <section class="mobile-section mobile-container" id="m-faq">
+      <h2 class="mobile-section-title gradient-text fade-up">FAQ</h2>
+      <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Это безопасно?</button><div class="faq-answer"><p>Да, мы не собираем данные. Единственный нюанс — антивирусы.</p></div></div>
+      <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Будут ли обновления?</button><div class="faq-answer"><p>Конечно, мы постоянно работаем над обходами и новыми фичами. Следите за ТГ-каналом.</p></div></div>
+    </section>
+
     <section class="mobile-section mobile-container" id="m-download">
       <h2 class="mobile-section-title gradient-text fade-up">Скачать</h2>
       <div class="mobile-download-buttons fade-up">
@@ -353,11 +372,14 @@
   <div id="desktopSite" class="hidden">
     <header class="desktop-header">
       <div class="container desktop-header-inner">
-        <a href="#" class="logo" style="font-size: 1.5rem;">
+        <a href="#" class="logo" style="font-size: 1.5rem;" onclick="logoClick(event)">
           <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 12px; box-shadow: 0 0 20px var(--primary-glow);"> EnvyClient
         </a>
         <nav class="desktop-nav">
           <a href="#d-features">Возможности</a>
+          <a href="#d-wiki">Гайды</a>
+          <a href="#d-changelog">Обновления</a>
+          <a href="#d-faq">FAQ</a>
           <a href="#d-download">Скачать</a>
           <a href="#" onclick="resetPlatform()" style="color: var(--primary);">Сменить устройство</a>
         </nav>
@@ -371,46 +393,85 @@
         <h1 class="gradient-text fade-up">Доминируй на<br>каждом сервере</h1>
         <p class="fade-up">Лучший чит для DDNet с продвинутым Aimbot, системой Avoid и огромным количеством визуальных настроек. Полная автоматизация действий.</p>
         <div class="fade-up">
-          <a href="#d-download" class="desktop-main-btn">
-            Скачать клиент
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          </a>
+          <a href="#d-download" class="desktop-main-btn">Скачать клиент <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></a>
         </div>
       </div>
-      <div class="desktop-hero-image fade-up">
-        <img src="screen1.png" alt="EnvyClient Interface">
-      </div>
+      <div class="desktop-hero-image fade-up"><img src="screen1.png" alt="EnvyClient"></div>
     </section>
 
     <section class="desktop-features" id="d-features">
       <div class="container">
-        <h2 class="gradient-text fade-up" style="font-size: 3.5rem; font-weight:900; text-align: center; margin-bottom: 10px; letter-spacing:-1px;">Функционал</h2>
-        <p class="fade-up" style="text-align: center; color: var(--text-muted); font-size: 1.2rem; font-weight: 500;">Всё, что нужно для доминации</p>
-
+        <h2 class="gradient-text fade-up desktop-section-title">Функционал</h2>
+        <p class="fade-up desktop-section-subtitle">Всё, что нужно для доминации</p>
         <div class="desktop-grid">
-          <div class="desktop-card fade-up">
-            <div class="desktop-card-icon"><img src="aim.png" alt="Aim"></div>
-            <div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent и поддержкой всех видов оружия (Hook, Hammer, Gun, Shotgun, Grenade).</p></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="aim.png"></div><div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent и поддержкой всех видов оружия.</p></div></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="av.png"></div><div><h3>Avoid System</h3><p>Умная система спасения от опасных тайлов. Режимы Legit и Blatant.</p></div></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="tas.png"></div><div><h3>TAS</h3><p>Запись, пауза, воспроизведение, библиотека записей и импорт .tas файлов.</p></div></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="vis.png"></div><div><h3>Visuals</h3><p>Ушки, хвост, крылья, кагуне, эффекты, кастомные лица и анимации AFK.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Гайды (ПК) -->
+    <section class="desktop-section" id="d-wiki">
+      <div class="container">
+        <h2 class="gradient-text fade-up desktop-section-title">База знаний</h2>
+        <p class="fade-up desktop-section-subtitle">Всё, что нужно знать перед началом</p>
+        <div class="wiki-grid fade-up">
+          <div class="wiki-card" onclick="openModal('install')"><h3>Установка</h3><p>Как правильно запустить</p></div>
+          <div class="wiki-card" onclick="openModal('aimbot')"><h3>Настройка Aimbot</h3><p>Идеальные настройки</p></div>
+          <div class="wiki-card" onclick="openModal('avoid')"><h3>Что такое Avoid</h3><p>Спасение от заморозки</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ченджлог (ПК) -->
+    <section class="desktop-features" id="d-changelog">
+      <div class="container">
+        <h2 class="gradient-text fade-up desktop-section-title">Обновления</h2>
+        <p class="fade-up desktop-section-subtitle">Мы не стоим на месте</p>
+        <div class="changelog-container fade-up">
+          <div class="changelog-item">
+            <div class="changelog-date">Вчера</div>
+            <div class="changelog-title">v2.0.1</div>
+            <div class="changelog-desc">Исправлен краш при заходе на сервер. Улучшен Aimbot.</div>
           </div>
-          <div class="desktop-card fade-up">
-            <div class="desktop-card-icon"><img src="av.png" alt="Avoid"></div>
-            <div><h3>Avoid System</h3><p>Умная система автоматического спасения от опасных тайлов. Режимы Legit и Blatant, настройка опасных тайлов и Rescue Aim.</p></div>
-          </div>
-          <div class="desktop-card fade-up">
-            <div class="desktop-card-icon"><img src="tas.png" alt="TAS"></div>
-            <div><h3>TAS</h3><p>Полноценный Tool-Assisted Speedrun. Запись, пауза, воспроизведение, библиотека записей и импорт .tas файлов.</p></div>
-          </div>
-          <div class="desktop-card fade-up">
-            <div class="desktop-card-icon"><img src="vis.png" alt="Visuals"></div>
-            <div><h3>Visuals</h3><p>Огромное количество визуальных настроек: ушки, хвост, крылья, кагуне, эффекты, кастомные лица и анимации AFK.</p></div>
+          <div class="changelog-item">
+            <div class="changelog-date">Неделю назад</div>
+            <div class="changelog-title">v2.0.0</div>
+            <div class="changelog-desc">Глобальное обновление интерфейса и новые Visuals.</div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Безопасность (ПК) -->
+    <section class="desktop-section">
+      <div class="container">
+        <div class="security-box fade-up">
+          <div class="security-icon">🛡️</div>
+          <div class="security-text">
+            <h3>Ваша безопасность</h3>
+            <p>Если ваш антивирус ругается на файл, не пугайтесь. Любой софт, взаимодействующий с памятью игры, вызывает подозрения. Добавьте папку с клиентом в исключения антивируса.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ (ПК) -->
+    <section class="desktop-section" id="d-faq">
+      <div class="container" style="max-width: 800px;">
+        <h2 class="gradient-text fade-up desktop-section-title">FAQ</h2>
+        <p class="fade-up desktop-section-subtitle">Ответы на частые вопросы</p>
+        <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Это безопасно?</button><div class="faq-answer"><p>Да, клиент не собирает ваши данные. Единственный нюанс — реакция антивирусов (читайте блок выше).</p></div></div>
+        <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Будут ли обновления?</button><div class="faq-answer"><p>Да, мы регулярно обновляем клиент и обходим новые защиты. Все новости в ТГ-канале.</p></div></div>
+        <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Можно ли получить бан?</button><div class="faq-answer"><p>Как и с любым софтом, риск есть всегда. Однако наша система избегает палевных действий. Используйте с умом.</p></div></div>
       </div>
     </section>
 
     <section class="desktop-download" id="d-download">
       <div class="container">
-        <h2 class="gradient-text fade-up">Скачать EnvyClient</h2>
+        <h2 class="gradient-text fade-up desktop-section-title" style="margin-bottom: 20px;">Скачать</h2>
         <p class="fade-up" style="color: var(--text-muted); font-size: 1.2rem; font-weight: 500;">Выберите вашу операционную систему</p>
         <div class="desktop-download-buttons fade-up">
           <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">💻</span> Windows (.zip)</a>
@@ -424,17 +485,28 @@
     </section>
   </div>
 
+  <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ГАЙДОВ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal(event)">&times;</button>
+      <div id="modalText"></div>
+    </div>
+  </div>
+
   <!-- СКРИПТЫ -->
   <script>
-    // 1. Переключение экранов
+    // 1. Навигация и переключение экранов
     function showSite(type) {
       document.getElementById('splashScreen').classList.add('hidden');
+      document.getElementById('desktopSite').classList.add('hidden');
+      document.getElementById('mobileSite').classList.add('hidden');
+      
       if (type === 'mobile') {
         document.getElementById('mobileSite').classList.remove('hidden');
       } else {
         document.getElementById('desktopSite').classList.remove('hidden');
       }
-      setTimeout(initAnimations, 100); // Запускаем анимации появления
+      setTimeout(initAnimations, 100);
     }
 
     function resetPlatform() {
@@ -444,7 +516,6 @@
       window.scrollTo(0, 0);
     }
 
-    // 2. Меню и галерея мобилки
     function toggleMenu() {
       document.getElementById('navMenu').classList.toggle('active');
     }
@@ -460,29 +531,90 @@
       }, 200);
     }
 
-    // 3. Свечение за курсором (только на ПК)
+    // 2. FAQ Аккордеон
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const answer = btn.nextElementSibling;
+      const isActive = item.classList.contains('active');
+      
+      // Закрываем все остальные
+      document.querySelectorAll('.faq-item').forEach(el => {
+        el.classList.remove('active');
+        el.querySelector('.faq-answer').style.maxHeight = null;
+      });
+
+      if (!isActive) {
+        item.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + "px";
+      }
+    }
+
+    // 3. Модалка для гайдов
+    const wikiContent = {
+      'install': `
+        <h2>Как установить EnvyClient</h2>
+        <p>Установка максимально простая и не требует инсталляторов:</p>
+        <ul>
+          <li>Скачайте архив для вашей ОС (Windows, Android или Linux).</li>
+          <li>Распакуйте архив в любую удобную папку (например, на Рабочий стол).</li>
+          <li>Запустите файл <b>EnvyClient.exe</b> (или apk на телефоне).</li>
+          <li>Введите свой никнейм и играйте.</li>
+        </ul>
+        <p><i>Примечание: если Windows SmartScreen блокирует запуск, нажмите "Подробнее" -> "Выполнить в любом случае".</i></p>
+      `,
+      'aimbot': `
+        <h2>Идеальная настройка Aimbot</h2>
+        <p>Чтобы не получить бан и играть комфортно, используйте режим <b>Legit</b>:</p>
+        <ul>
+          <li><b>FOV:</b> 15-30 градусов (не ставьте на весь экран).</li>
+          <li><b>Smooth:</b> 5-10 (плавность наведения).</li>
+          <li><b>Hitbox:</b> Лучше всего использовать "Body" или "Nearest".</li>
+          <li><b>Silent Aim:</b> Включить, если хотите стрелять точно в цель без визуального поворота камеры.</li>
+        </ul>
+        <p>Для тестов зайдите на пустой сервер и постреляйте по хукам.</p>
+      `,
+      'avoid': `
+        <h2>Что такое Avoid System?</h2>
+        <p>Это система, которая автоматически спасает вас от заморозки (frozen).</p>
+        <ul>
+          <li><b>Legit Mode:</b> Делает микро-движения, которые выглядят как обычная игра. Лучше всего для игры на публичных серверах.</li>
+          <li><b>Blatant Mode:</b> Мгновенно телепортирует или совершает идеальные движения. Используйте с осторожностью, чтобы не спалиться.</li>
+          <li><b>Rescue Aim:</b> Позволяет моментально прицелиться в того, кто вас заморозил, и убить его.</li>
+        </ul>
+      `
+    };
+
+    function openModal(type) {
+      document.getElementById('modalText').innerHTML = wikiContent[type];
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if(e) e.preventDefault();
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // 4. Свечение за курсором
     const cursorGlow = document.getElementById('cursorGlow');
     document.addEventListener('mousemove', (e) => {
       cursorGlow.style.left = e.clientX + 'px';
       cursorGlow.style.top = e.clientY + 'px';
     });
 
-    // 4. Анимация появления при скролле (Fade-up)
+    // 5. Анимации появления
     function initAnimations() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('visible');
         });
       }, { threshold: 0.1 });
-      
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     }
-    // Запускаем при первой загрузке
     initAnimations();
 
-    // 5. 3D Эффект наклона для ПК (Только для больших экранов)
+    // 6. 3D наклон на ПК
     if (window.innerWidth > 900) {
       const cards = document.querySelectorAll('.desktop-card, .desktop-hero-image img');
       cards.forEach(card => {
@@ -501,15 +633,29 @@
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
           }
         });
-        
         card.addEventListener('mouseleave', () => {
-          if (card.tagName === 'IMG') {
-            card.style.transform = `rotateY(-10deg) rotateX(5deg) scale(1)`;
-          } else {
-            card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0)`;
-          }
+          if (card.tagName === 'IMG') card.style.transform = `rotateY(-10deg) rotateX(5deg) scale(1)`;
+          else card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0)`;
         });
       });
+    }
+
+    // 7. ПАСХАЛКА (Клик по логотипу 5 раз)
+    let logoClicks = 0;
+    function logoClick(e) {
+      // Если это ссылка на главную, отменяем переход
+      if (e) e.preventDefault(); 
+      logoClicks++;
+      
+      if (logoClicks >= 5) {
+        document.getElementById('easterEgg').classList.add('active');
+        logoClicks = 0;
+        
+        // Автоматически закрываем через 5 секунд
+        setTimeout(() => {
+          document.getElementById('easterEgg').classList.remove('active');
+        }, 5000);
+      }
     }
   </script>
 </body>

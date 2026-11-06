@@ -81,7 +81,7 @@
       left: 0;
       width: 100%;
       z-index: 100;
-      padding: 0 20px;
+      padding: 0 12px; /* Уменьшил отступы для мобилок */
       transition: transform 0.3s ease;
     }
 
@@ -93,7 +93,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: 30px;
-      padding: 10px 16px;
+      padding: 8px 12px; /* Сделал чуть компактнее */
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -103,13 +103,13 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     /* Кнопка мобильного меню (Бургер) */
     .menu-btn {
-      width: 40px;
-      height: 40px;
+      width: 36px; /* Чуть меньше */
+      height: 36px;
       border-radius: 50%;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -117,52 +117,49 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
       transition: all 0.3s;
-    }
-
-    .menu-btn:hover {
-      background: var(--surface-hover);
+      flex-shrink: 0;
     }
 
     .menu-btn span {
       display: block;
-      width: 18px;
+      width: 16px;
       height: 2px;
       background: var(--text-main);
       border-radius: 2px;
-      transition: all 0.3s;
     }
 
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       text-decoration: none;
       color: var(--text-main);
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1rem; /* Уменьшил шрифт логотипа */
     }
 
     .logo img {
-      height: 32px;
-      width: 32px;
-      border-radius: 10px;
+      height: 28px; /* Логотип чуть меньше */
+      width: 28px;
+      border-radius: 8px;
       object-fit: cover;
-      box-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+      box-shadow: 0 0 10px rgba(192, 132, 252, 0.6);
     }
 
     .header-btn {
       background: var(--primary);
       color: #000;
       text-decoration: none;
-      padding: 8px 20px;
+      padding: 8px 14px; /* Сделал кнопку уже */
       border-radius: 20px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.85rem; /* Уменьшил текст */
       transition: all 0.3s ease;
       box-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
+      white-space: nowrap;
     }
 
     /* --- Выпадающее меню --- */
@@ -177,10 +174,7 @@
       transition: all 0.3s ease;
     }
 
-    .nav-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .nav-overlay.active { opacity: 1; visibility: visible; }
 
     .nav-menu {
       position: fixed;
@@ -197,9 +191,7 @@
       gap: 15px;
     }
 
-    .nav-menu.active {
-      left: 0;
-    }
+    .nav-menu.active { left: 0; }
 
     .nav-menu h2 {
       font-size: 1.5rem;
@@ -225,7 +217,7 @@
 
     /* --- Главный экран (Hero) --- */
     .hero {
-      padding: 140px 0 60px;
+      padding: 130px 0 60px;
       text-align: center;
       position: relative;
     }
@@ -236,20 +228,15 @@
       gap: 10px;
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-main);
       margin-bottom: 24px;
       font-weight: 600;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
 
-    .badge img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-    }
+    .badge img { width: 22px; height: 22px; border-radius: 50%; }
 
     .hero h1 {
       font-size: 2.2rem;
@@ -286,19 +273,10 @@
       max-width: 300px;
       transition: all 0.3s ease;
       box-shadow: 0 0 20px rgba(192, 132, 252, 0.4);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .main-btn:hover {
-      box-shadow: 0 0 35px rgba(192, 132, 252, 0.8);
-      transform: scale(1.02);
     }
 
     /* --- Секции --- */
-    .section {
-      padding: 40px 0;
-    }
+    .section { padding: 40px 0; }
 
     .section-title {
       font-size: 2rem;
@@ -353,7 +331,6 @@
       border: 1px solid var(--border);
       background: var(--surface);
       aspect-ratio: 16 / 10;
-      transition: opacity 0.3s;
     }
 
     .gallery-display img {
@@ -376,14 +353,6 @@
       border-radius: 24px;
       padding: 24px;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(192, 132, 252, 0.4);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(192, 132, 252, 0.15);
     }
 
     .card-icon {
@@ -395,28 +364,15 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
-      box-shadow: inset 0 0 10px rgba(192, 132, 252, 0.2);
       padding: 8px;
     }
 
-    .card-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    .card-icon img { width: 100%; height: 100%; object-fit: contain; }
 
-    .card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 8px;
-      color: var(--text-main);
-    }
+    .card h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-main); }
+    .card p { color: var(--text-muted); font-size: 0.95rem; }
 
-    .card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* --- FAQ (Аккордеон) --- */
+    /* --- FAQ --- */
     .faq-item {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -449,9 +405,7 @@
       transition: transform 0.3s;
     }
 
-    .faq-item.active .faq-question::after {
-      transform: rotate(45deg);
-    }
+    .faq-item.active .faq-question::after { transform: rotate(45deg); }
 
     .faq-answer {
       max-height: 0;
@@ -462,16 +416,10 @@
       font-size: 0.95rem;
     }
 
-    .faq-item.active {
-      border-color: rgba(192, 132, 252, 0.4);
-    }
+    .faq-item.active { border-color: rgba(192, 132, 252, 0.4); }
 
     /* --- Кнопки скачивания --- */
-    .download-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .download-buttons { display: flex; flex-direction: column; gap: 12px; }
 
     .btn-platform {
       display: flex;
@@ -494,10 +442,7 @@
       transform: translateX(5px);
     }
 
-    .btn-platform span.icon {
-      font-size: 1.5rem;
-      color: var(--primary);
-    }
+    .btn-platform span.icon { font-size: 1.5rem; color: var(--primary); }
 
     /* --- Подвал --- */
     footer {
@@ -508,25 +453,9 @@
       background: linear-gradient(to top, rgba(18,18,22,0.8), transparent);
     }
 
-    .footer-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--primary);
-    }
-
-    .devs {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 24px;
-      line-height: 1.8;
-    }
-
-    .devs a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 500;
-    }
+    .footer-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; color: var(--primary); }
+    .devs { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.8; }
+    .devs a { color: var(--primary); text-decoration: none; font-weight: 500; }
 
     .tg-link {
       display: inline-flex;
@@ -543,34 +472,26 @@
       transition: all 0.3s;
     }
     
-    .tg-link:hover {
-      background: var(--surface-hover);
-      border-color: var(--primary);
-    }
-
+    .tg-link:hover { background: var(--surface-hover); border-color: var(--primary); }
     .tg-link svg { fill: var(--primary); }
-
-    .copyright {
-      color: #555;
-      font-size: 0.85rem;
-    }
+    .copyright { color: #555; font-size: 0.85rem; }
 
     @media (min-width: 768px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
       .download-buttons { flex-direction: row; }
       .btn-platform { flex: 1; justify-content: center; gap: 12px; }
       .hero h1 { font-size: 3rem; }
+      .header-inner { padding: 10px 16px; }
+      .logo { font-size: 1.1rem; }
+      .header-btn { padding: 8px 20px; font-size: 0.95rem; }
     }
   </style>
 </head>
 <body>
 
   <div class="particles" id="particles"></div>
-
-  <!-- Затемнение фона при открытом меню -->
   <div class="nav-overlay" id="navOverlay"></div>
 
-  <!-- Боковое меню -->
   <nav class="nav-menu" id="navMenu">
     <h2>Навигация</h2>
     <a href="#hero" onclick="closeMenu()">Главная</a>
@@ -610,7 +531,6 @@
     </a>
   </section>
 
-  <!-- Новая Галерея с вкладками -->
   <section class="section container" id="gallery">
     <h2 class="section-title">Галерея</h2>
     <p class="section-subtitle">Посмотри, как выглядит клиент</p>
@@ -656,7 +576,6 @@
     </div>
   </section>
 
-  <!-- Новая секция FAQ -->
   <section class="section container" id="faq">
     <h2 class="section-title">FAQ</h2>
     <p class="section-subtitle">Часто задаваемые вопросы</p>
@@ -710,7 +629,7 @@
   </footer>
 
   <script>
-    // 1. Генерация летающих частиц
+    // Летящие частицы
     const particlesContainer = document.getElementById('particles');
     for (let i = 0; i < 25; i++) {
       const particle = document.createElement('div');
@@ -724,15 +643,10 @@
       particlesContainer.appendChild(particle);
     }
 
-    // 2. Логика мобильного меню
+    // Меню
     const menuBtn = document.getElementById('menuBtn');
     const navMenu = document.getElementById('navMenu');
     const navOverlay = document.getElementById('navOverlay');
-
-    function openMenu() {
-      navMenu.classList.add('active');
-      navOverlay.classList.add('active');
-    }
 
     function closeMenu() {
       navMenu.classList.remove('active');
@@ -741,22 +655,21 @@
 
     menuBtn.addEventListener('click', () => {
       if(navMenu.classList.contains('active')) closeMenu();
-      else openMenu();
+      else {
+        navMenu.classList.add('active');
+        navOverlay.classList.add('active');
+      }
     });
     navOverlay.addEventListener('click', closeMenu);
 
-    // 3. Галерея с вкладками
+    // Галерея
     const tabs = document.querySelectorAll('.tab-btn');
     const mainImage = document.getElementById('mainScreenImage');
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
-        // Убираем активный класс у всех
         tabs.forEach(t => t.classList.remove('active'));
-        // Добавляем кликнутому
         tab.classList.add('active');
-        
-        // Меняем картинку с анимацией
         mainImage.style.opacity = 0;
         setTimeout(() => {
           mainImage.src = tab.getAttribute('data-target');
@@ -765,50 +678,34 @@
       });
     });
 
-    // 4. Аккордеон для FAQ
+    // FAQ
     const faqQuestions = document.querySelectorAll('.faq-question');
-    
     faqQuestions.forEach(question => {
       question.addEventListener('click', () => {
         const item = question.parentElement;
         const answer = question.nextElementSibling;
         
-        // Закрываем другие (чтобы был открыт только один)
-        document.querySelectorAll('.faq-item').forEach(otherItem => {
-          if (otherItem !== item) {
-            otherItem.classList.remove('active');
-            otherItem.querySelector('.faq-answer').style.maxHeight = null;
+        document.querySelectorAll('.faq-item').forEach(other => {
+          if (other !== item) {
+            other.classList.remove('active');
+            other.querySelector('.faq-answer').style.maxHeight = null;
           }
         });
 
-        // Переключаем текущий
         item.classList.toggle('active');
-        
-        if (item.classList.contains('active')) {
-          answer.style.maxHeight = answer.scrollHeight + "px";
-        } else {
-          answer.style.maxHeight = null;
-        }
+        if (item.classList.contains('active')) answer.style.maxHeight = answer.scrollHeight + "px";
+        else answer.style.maxHeight = null;
       });
     });
 
-    // 5. Умная шапка при скролле
+    // Скрытие шапки
     let lastScroll = 0;
     const header = document.getElementById('mainHeader');
-    
     window.addEventListener('scroll', () => {
       const currentScroll = window.pageYOffset;
-      if (currentScroll <= 0) {
-        header.style.transform = 'translateY(0)';
-        return;
-      }
-      if (currentScroll > lastScroll && !navMenu.classList.contains('active')) {
-        // Скролл вниз - прячем шапку
-        header.style.transform = 'translateY(-100px)';
-      } else {
-        // Скролл вверх - показываем
-        header.style.transform = 'translateY(0)';
-      }
+      if (currentScroll <= 0) { header.style.transform = 'translateY(0)'; return; }
+      if (currentScroll > lastScroll && !navMenu.classList.contains('active')) header.style.transform = 'translateY(-100px)';
+      else header.style.transform = 'translateY(0)';
       lastScroll = currentScroll;
     });
   </script>

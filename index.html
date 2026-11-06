@@ -99,8 +99,11 @@
     .mobile-hero { padding: 140px 0 60px; text-align: center; }
     .badge { display: inline-flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 0.95rem; font-weight: 700; margin-bottom: 24px; backdrop-filter: blur(10px); }
     .badge img { width: 24px; height: 24px; border-radius: 50%; }
-    .mobile-hero h1 { font-size: 2.4rem; font-weight: 900; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
+    
+    /* Мобильный заголовок */
+    .mobile-hero h1 { font-size: 2.4rem; font-weight: 900; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; text-transform: uppercase; }
     .mobile-hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px; font-weight: 500; }
+    
     .main-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: #000; padding: 18px 32px; border-radius: 25px; font-size: 1.1rem; font-weight: 800; text-decoration: none; width: 100%; max-width: 300px; box-shadow: 0 10px 30px var(--primary-glow); }
 
     .mobile-section { padding: 50px 0; }
@@ -134,8 +137,11 @@
     .desktop-nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
 
     .desktop-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; padding: 100px 0; min-height: 80vh; }
-    .desktop-hero-text h1 { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 30px; letter-spacing: -2px; filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.3)); }
+    
+    /* ПК заголовок */
+    .desktop-hero-text h1 { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 30px; letter-spacing: -2px; filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.3)); text-transform: uppercase; }
     .desktop-hero-text p { font-size: 1.4rem; color: var(--text-muted); margin-bottom: 50px; max-width: 500px; line-height: 1.6; font-weight: 500; }
+    
     .desktop-main-btn { background: var(--primary); color: #000; padding: 20px 50px; border-radius: 16px; font-size: 1.2rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px var(--primary-glow); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
     .desktop-main-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 50px rgba(192, 132, 252, 0.6); }
 
@@ -181,17 +187,6 @@
     .modal-content li { margin-bottom: 10px; }
 
     /* =========================================
-       ЧЕНДЖЛОГ (ИСТОРИЯ ОБНОВЛЕНИЙ)
-       ========================================= */
-    .changelog-container { max-width: 800px; margin: 0 auto; position: relative; padding-left: 30px; }
-    .changelog-container::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--border); }
-    .changelog-item { position: relative; margin-bottom: 40px; }
-    .changelog-item::before { content: ''; position: absolute; left: -36px; top: 5px; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-    .changelog-date { color: var(--primary); font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
-    .changelog-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
-    .changelog-desc { color: var(--text-muted); font-size: 1rem; }
-
-    /* =========================================
        БЕЗОПАСНОСТЬ
        ========================================= */
     .security-box { background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(99, 102, 241, 0.1)); border: 1px solid var(--primary); border-radius: 24px; padding: 50px; display: flex; align-items: center; gap: 40px; max-width: 900px; margin: 0 auto; }
@@ -216,7 +211,7 @@
     .desktop-btn-platform:hover { background: rgba(192, 132, 252, 0.15); border-color: var(--primary); transform: translateY(-5px); color: var(--primary); box-shadow: 0 15px 30px rgba(192, 132, 252, 0.2); }
 
     /* =========================================
-       ПАСХАЛКА (СЕКРЕТНЫЙ ЭКРАН)
+       ПАСХАЛКА
        ========================================= */
     #easterEgg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 1s; }
     #easterEgg.active { opacity: 1; visibility: visible; }
@@ -262,7 +257,6 @@
       <a href="#m-gallery" onclick="toggleMenu()">Скриншоты</a>
       <a href="#m-features" onclick="toggleMenu()">Функционал</a>
       <a href="#m-wiki" onclick="toggleMenu()">Гайды</a>
-      <a href="#m-changelog" onclick="toggleMenu()">Обновления</a>
       <a href="#m-faq" onclick="toggleMenu()">FAQ</a>
       <a href="#" onclick="toggleMenu(); resetPlatform();" style="margin-top:20px; color: var(--primary);">Сменить устройство</a>
     </nav>
@@ -279,8 +273,9 @@
 
     <section class="mobile-hero mobile-container" id="m-hero">
       <div class="badge fade-up"><img src="images.png" alt="DDNet"> DDNet</div>
-      <h1 class="gradient-text fade-up">Уничтожай эго<br>каждого игрока<br>на любом сервере</h1>
-      <p class="fade-up">с лучшим читом для DDNet</p>
+      <!-- Измененный текст на мобилке -->
+      <h1 class="gradient-text fade-up">BEST MOBILE<br>CLIENT</h1>
+      <p class="fade-up">Лучший чит для DDNet на телефоне</p>
       <a href="#m-download" class="main-btn fade-up">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         Скачать
@@ -316,23 +311,6 @@
         <div class="wiki-card" onclick="openModal('install')"><h3>Установка</h3><p>Как правильно запустить</p></div>
         <div class="wiki-card" onclick="openModal('aimbot')"><h3>Настройка Aimbot</h3><p>Идеальные настройки</p></div>
         <div class="wiki-card" onclick="openModal('avoid')"><h3>Что такое Avoid</h3><p>Спасение от заморозки</p></div>
-      </div>
-    </section>
-
-    <!-- Ченджлог (Мобилки) -->
-    <section class="mobile-section mobile-container" id="m-changelog">
-      <h2 class="mobile-section-title gradient-text fade-up">Обновления</h2>
-      <div class="changelog-container fade-up" style="padding-left: 20px;">
-        <div class="changelog-item">
-          <div class="changelog-date">Вчера</div>
-          <div class="changelog-title">v2.0.1</div>
-          <div class="changelog-desc">Исправлен краш при заходе на сервер. Улучшен Aimbot.</div>
-        </div>
-        <div class="changelog-item">
-          <div class="changelog-date">Неделю назад</div>
-          <div class="changelog-title">v2.0.0</div>
-          <div class="changelog-desc">Глобальное обновление интерфейса и новые Visuals.</div>
-        </div>
       </div>
     </section>
 
@@ -378,7 +356,6 @@
         <nav class="desktop-nav">
           <a href="#d-features">Возможности</a>
           <a href="#d-wiki">Гайды</a>
-          <a href="#d-changelog">Обновления</a>
           <a href="#d-faq">FAQ</a>
           <a href="#d-download">Скачать</a>
           <a href="#" onclick="resetPlatform()" style="color: var(--primary);">Сменить устройство</a>
@@ -390,8 +367,9 @@
     <section class="container desktop-hero">
       <div class="desktop-hero-text">
         <div class="badge fade-up" style="margin-bottom: 30px;"><img src="images.png" alt="DDNet"> DDNet Client</div>
-        <h1 class="gradient-text fade-up">Доминируй на<br>каждом сервере</h1>
-        <p class="fade-up">Лучший чит для DDNet с продвинутым Aimbot, системой Avoid и огромным количеством визуальных настроек. Полная автоматизация действий.</p>
+        <!-- Измененный текст на ПК -->
+        <h1 class="gradient-text fade-up">GOOD PC<br>CLIENT</h1>
+        <p class="fade-up">Лучший чит для DDNet на компьютере. Продвинутый Aimbot, система Avoid и огромное количество визуальных настроек.</p>
         <div class="fade-up">
           <a href="#d-download" class="desktop-main-btn">Скачать клиент <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></a>
         </div>
@@ -421,26 +399,6 @@
           <div class="wiki-card" onclick="openModal('install')"><h3>Установка</h3><p>Как правильно запустить</p></div>
           <div class="wiki-card" onclick="openModal('aimbot')"><h3>Настройка Aimbot</h3><p>Идеальные настройки</p></div>
           <div class="wiki-card" onclick="openModal('avoid')"><h3>Что такое Avoid</h3><p>Спасение от заморозки</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Ченджлог (ПК) -->
-    <section class="desktop-features" id="d-changelog">
-      <div class="container">
-        <h2 class="gradient-text fade-up desktop-section-title">Обновления</h2>
-        <p class="fade-up desktop-section-subtitle">Мы не стоим на месте</p>
-        <div class="changelog-container fade-up">
-          <div class="changelog-item">
-            <div class="changelog-date">Вчера</div>
-            <div class="changelog-title">v2.0.1</div>
-            <div class="changelog-desc">Исправлен краш при заходе на сервер. Улучшен Aimbot.</div>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-date">Неделю назад</div>
-            <div class="changelog-title">v2.0.0</div>
-            <div class="changelog-desc">Глобальное обновление интерфейса и новые Visuals.</div>
-          </div>
         </div>
       </div>
     </section>
@@ -495,17 +453,14 @@
 
   <!-- СКРИПТЫ -->
   <script>
-    // 1. Навигация и переключение экранов
     function showSite(type) {
       document.getElementById('splashScreen').classList.add('hidden');
       document.getElementById('desktopSite').classList.add('hidden');
       document.getElementById('mobileSite').classList.add('hidden');
       
-      if (type === 'mobile') {
-        document.getElementById('mobileSite').classList.remove('hidden');
-      } else {
-        document.getElementById('desktopSite').classList.remove('hidden');
-      }
+      if (type === 'mobile') document.getElementById('mobileSite').classList.remove('hidden');
+      else document.getElementById('desktopSite').classList.remove('hidden');
+      
       setTimeout(initAnimations, 100);
     }
 
@@ -525,19 +480,14 @@
       btn.classList.add('active');
       const img = document.getElementById('mainScreenImage');
       img.style.opacity = 0;
-      setTimeout(() => {
-        img.src = imageSrc;
-        img.style.opacity = 1;
-      }, 200);
+      setTimeout(() => { img.src = imageSrc; img.style.opacity = 1; }, 200);
     }
 
-    // 2. FAQ Аккордеон
     function toggleFaq(btn) {
       const item = btn.parentElement;
       const answer = btn.nextElementSibling;
       const isActive = item.classList.contains('active');
       
-      // Закрываем все остальные
       document.querySelectorAll('.faq-item').forEach(el => {
         el.classList.remove('active');
         el.querySelector('.faq-answer').style.maxHeight = null;
@@ -549,16 +499,14 @@
       }
     }
 
-    // 3. Модалка для гайдов
     const wikiContent = {
       'install': `
         <h2>Как установить EnvyClient</h2>
         <p>Установка максимально простая и не требует инсталляторов:</p>
         <ul>
-          <li>Скачайте архив для вашей ОС (Windows, Android или Linux).</li>
-          <li>Распакуйте архив в любую удобную папку (например, на Рабочий стол).</li>
+          <li>Скачайте архив для вашей ОС.</li>
+          <li>Распакуйте архив в любую удобную папку.</li>
           <li>Запустите файл <b>EnvyClient.exe</b> (или apk на телефоне).</li>
-          <li>Введите свой никнейм и играйте.</li>
         </ul>
         <p><i>Примечание: если Windows SmartScreen блокирует запуск, нажмите "Подробнее" -> "Выполнить в любом случае".</i></p>
       `,
@@ -569,16 +517,14 @@
           <li><b>FOV:</b> 15-30 градусов (не ставьте на весь экран).</li>
           <li><b>Smooth:</b> 5-10 (плавность наведения).</li>
           <li><b>Hitbox:</b> Лучше всего использовать "Body" или "Nearest".</li>
-          <li><b>Silent Aim:</b> Включить, если хотите стрелять точно в цель без визуального поворота камеры.</li>
         </ul>
-        <p>Для тестов зайдите на пустой сервер и постреляйте по хукам.</p>
       `,
       'avoid': `
         <h2>Что такое Avoid System?</h2>
         <p>Это система, которая автоматически спасает вас от заморозки (frozen).</p>
         <ul>
-          <li><b>Legit Mode:</b> Делает микро-движения, которые выглядят как обычная игра. Лучше всего для игры на публичных серверах.</li>
-          <li><b>Blatant Mode:</b> Мгновенно телепортирует или совершает идеальные движения. Используйте с осторожностью, чтобы не спалиться.</li>
+          <li><b>Legit Mode:</b> Делает микро-движения, которые выглядят как обычная игра.</li>
+          <li><b>Blatant Mode:</b> Мгновенно телепортирует или совершает идеальные движения.</li>
           <li><b>Rescue Aim:</b> Позволяет моментально прицелиться в того, кто вас заморозил, и убить его.</li>
         </ul>
       `
@@ -596,14 +542,12 @@
       document.body.style.overflow = '';
     }
 
-    // 4. Свечение за курсором
     const cursorGlow = document.getElementById('cursorGlow');
     document.addEventListener('mousemove', (e) => {
       cursorGlow.style.left = e.clientX + 'px';
       cursorGlow.style.top = e.clientY + 'px';
     });
 
-    // 5. Анимации появления
     function initAnimations() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -614,7 +558,6 @@
     }
     initAnimations();
 
-    // 6. 3D наклон на ПК
     if (window.innerWidth > 900) {
       const cards = document.querySelectorAll('.desktop-card, .desktop-hero-image img');
       cards.forEach(card => {
@@ -640,21 +583,14 @@
       });
     }
 
-    // 7. ПАСХАЛКА (Клик по логотипу 5 раз)
     let logoClicks = 0;
     function logoClick(e) {
-      // Если это ссылка на главную, отменяем переход
       if (e) e.preventDefault(); 
       logoClicks++;
-      
       if (logoClicks >= 5) {
         document.getElementById('easterEgg').classList.add('active');
         logoClicks = 0;
-        
-        // Автоматически закрываем через 5 секунд
-        setTimeout(() => {
-          document.getElementById('easterEgg').classList.remove('active');
-        }, 5000);
+        setTimeout(() => { document.getElementById('easterEgg').classList.remove('active'); }, 5000);
       }
     }
   </script>

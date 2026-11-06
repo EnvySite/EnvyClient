@@ -123,7 +123,7 @@
     .mobile-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
 
     .mobile-download-buttons { display: flex; flex-direction: column; gap: 12px; }
-    .mobile-btn-platform { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s; }
+    .mobile-btn-platform { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s; cursor: pointer; }
 
     /* =========================================
        ПК ВЕРСИЯ
@@ -188,7 +188,7 @@
 
     .desktop-download { padding: 100px 0; text-align: center; }
     .desktop-download-buttons { display: flex; justify-content: center; gap: 25px; margin-top: 40px; }
-    .desktop-btn-platform { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 50px; border-radius: 20px; text-decoration: none; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 15px; transition: all 0.3s; backdrop-filter: blur(10px); }
+    .desktop-btn-platform { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 50px; border-radius: 20px; text-decoration: none; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 15px; transition: all 0.3s; backdrop-filter: blur(10px); cursor: pointer; }
     .desktop-btn-platform:hover { background: rgba(192, 132, 252, 0.15); border-color: var(--primary); transform: translateY(-5px); color: var(--primary); box-shadow: 0 15px 30px rgba(192, 132, 252, 0.2); }
 
     @media (max-width: 900px) {
@@ -325,10 +325,10 @@
     <section class="mobile-section mobile-container" id="m-download">
       <h2 class="mobile-section-title gradient-text fade-up">Скачать</h2>
       <div class="mobile-download-buttons fade-up">
-        <!-- НОВЫЕ ССЫЛКИ С ЯНДЕКС.ДИСКА -->
-        <a href="https://disk.yandex.ru/d/xpsiTlqnwOsW7A?download=1" class="mobile-btn-platform" target="_blank" rel="noopener"><span>Windows</span><span>💻</span></a>
-        <a href="https://disk.yandex.ru/d/Uo0OwXJnORuWxg?download=1" class="mobile-btn-platform" target="_blank" rel="noopener"><span>Android</span><span>📱</span></a>
-        <a href="https://disk.yandex.ru/d/2btNkyZ6Wn0Tog?download=1" class="mobile-btn-platform" target="_blank" rel="noopener"><span>Linux</span><span>🐧</span></a>
+        <!-- Кнопки вызывают JS функцию для скачивания -->
+        <button onclick="downloadFile('https://disk.yandex.ru/d/xpsiTlqnwOsW7A')" class="mobile-btn-platform"><span>Windows</span><span>💻</span></button>
+        <button onclick="downloadFile('https://disk.yandex.ru/d/Uo0OwXJnORuWxg')" class="mobile-btn-platform"><span>Android</span><span>📱</span></button>
+        <button onclick="downloadFile('https://disk.yandex.ru/d/2btNkyZ6Wn0Tog')" class="mobile-btn-platform"><span>Linux</span><span>🐧</span></button>
       </div>
     </section>
     
@@ -419,10 +419,10 @@
         <h2 class="gradient-text fade-up desktop-section-title" style="margin-bottom: 20px;">Скачать</h2>
         <p class="fade-up" style="color: var(--text-muted); font-size: 1.2rem; font-weight: 500;">Выберите вашу операционную систему</p>
         <div class="desktop-download-buttons fade-up">
-          <!-- НОВЫЕ ССЫЛКИ С ЯНДЕКС.ДИСКА -->
-          <a href="https://disk.yandex.ru/d/xpsiTlqnwOsW7A?download=1" class="desktop-btn-platform" target="_blank" rel="noopener"><span style="font-size: 1.8rem;">💻</span> Windows (.zip)</a>
-          <a href="https://disk.yandex.ru/d/Uo0OwXJnORuWxg?download=1" class="desktop-btn-platform" target="_blank" rel="noopener"><span style="font-size: 1.8rem;">📱</span> Android (.apk)</a>
-          <a href="https://disk.yandex.ru/d/2btNkyZ6Wn0Tog?download=1" class="desktop-btn-platform" target="_blank" rel="noopener"><span style="font-size: 1.8rem;">🐧</span> Linux (.tar.gz)</a>
+          <!-- Кнопки вызывают JS функцию для скачивания -->
+          <button onclick="downloadFile('https://disk.yandex.ru/d/xpsiTlqnwOsW7A')" class="desktop-btn-platform"><span style="font-size: 1.8rem;">💻</span> Windows (.zip)</button>
+          <button onclick="downloadFile('https://disk.yandex.ru/d/Uo0OwXJnORuWxg')" class="desktop-btn-platform"><span style="font-size: 1.8rem;">📱</span> Android (.apk)</button>
+          <button onclick="downloadFile('https://disk.yandex.ru/d/2btNkyZ6Wn0Tog')" class="desktop-btn-platform"><span style="font-size: 1.8rem;">🐧</span> Linux (.tar.gz)</button>
         </div>
         <div class="fade-up" style="margin-top: 60px; color: var(--text-muted); font-weight: 500;">
           Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:var(--primary); text-decoration:none; font-weight: 700;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:var(--primary); text-decoration:none; font-weight: 700;">@wakizashu</a>
@@ -441,6 +441,28 @@
 
   <!-- СКРИПТЫ -->
   <script>
+    // --- ФУНКЦИЯ ПРЯМОГО СКАЧИВАНИЯ С ЯНДЕКС.ДИСКА ---
+    async function downloadFile(url) {
+      try {
+        // Запрашиваем у API Яндекса публичную ссылку на скачивание
+        const response = await fetch(`https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=${url}`);
+        if (!response.ok) throw new Error('Ошибка сети');
+        
+        const data = await response.json();
+        
+        // Создаем скрытую ссылку и кликаем по ней
+        const link = document.createElement('a');
+        link.href = data.href;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        // Если API не сработало (например, CORS), открываем прямую ссылку с параметром
+        window.open(url + '?download=1', '_blank');
+      }
+    }
+
     function showSite(type) {
       document.getElementById('splashScreen').classList.add('hidden');
       document.getElementById('desktopSite').classList.add('hidden');

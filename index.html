@@ -7,20 +7,24 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <link rel="icon" type="image/png" href="logo.png">
 
   <style>
+    /* =========================================
+       ОБЩИЕ СТИЛИ И ПЕРЕМЕННЫЕ
+       ========================================= */
     :root {
-      --bg-color: #09090b;
-      --surface: #121216;
-      --surface-hover: #1c1c22;
+      --bg-color: #050508;
+      --surface: rgba(20, 20, 25, 0.6);
+      --surface-hover: rgba(30, 30, 38, 0.8);
       --primary: #c084fc; 
-      --primary-dim: rgba(192, 132, 252, 0.15);
+      --primary-glow: rgba(192, 132, 252, 0.5);
+      --secondary: #818cf8;
       --text-main: #ffffff;
-      --text-muted: #8e8e93;
-      --border: rgba(255, 255, 255, 0.06);
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,58 +37,119 @@
       line-height: 1.5;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 50% -20%, rgba(192, 132, 252, 0.15), transparent 50%),
-        radial-gradient(circle at 0% 100%, rgba(99, 102, 241, 0.05), transparent 40%);
+        radial-gradient(circle at 0% 0%, rgba(192, 132, 252, 0.15), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.15), transparent 40%);
       background-attachment: fixed;
     }
 
-    /* Скрытие/показ */
-    .hidden { display: none !important; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    /* Живой фон с частицами */
+    .ambient-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: -2; overflow: hidden; pointer-events: none;
+    }
+    .blob {
+      position: absolute; filter: blur(100px); border-radius: 50%;
+      opacity: 0.4; animation: float 20s infinite ease-in-out alternate;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--primary); top: -10%; left: -10%; }
+    .blob-2 { width: 600px; height: 600px; background: var(--secondary); bottom: -20%; right: -10%; animation-delay: -5s; }
+    .blob-3 { width: 400px; height: 400px; background: #e879f9; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.2; }
 
-    /* --- ЭКРАН ВЫБОРА --- */
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, 30px) scale(1.1); }
+      100% { transform: translate(-30px, 60px) scale(0.9); }
+    }
+
+    /* Свечение за курсором на ПК */
+    .cursor-glow {
+      position: fixed; width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none; z-index: -1;
+      transform: translate(-50%, -50%); transition: opacity 0.3s;
+    }
+
+    .hidden { display: none !important; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+    /* Общие анимации */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* Текст с переливом */
+    .gradient-text {
+      background: linear-gradient(to right, #ffffff, #c084fc, #818cf8, #ffffff);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 4s linear infinite;
+    }
+    @keyframes shine { to { background-position: 300% center; } }
+
+    /* =========================================
+       ЭКРАН ВЫБОРА (SPLASH)
+       ========================================= */
     #splashScreen {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: var(--bg-color); z-index: 9999;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
+      transition: opacity 0.5s ease;
     }
 
     .splash-logo {
-      width: 100px; height: 100px; border-radius: 24px;
-      box-shadow: 0 0 50px rgba(192, 132, 252, 0.6); margin-bottom: 30px;
+      width: 120px; height: 120px; border-radius: 30px;
+      box-shadow: 0 0 60px var(--primary-glow), inset 0 0 20px rgba(255,255,255,0.2);
+      margin-bottom: 30px;
       animation: pulseGlow 2s infinite alternate;
     }
 
     @keyframes pulseGlow {
-      0% { box-shadow: 0 0 30px rgba(192, 132, 252, 0.4); transform: scale(1); }
-      100% { box-shadow: 0 0 60px rgba(192, 132, 252, 0.8); transform: scale(1.05); }
+      0% { box-shadow: 0 0 30px var(--primary-glow); transform: scale(1); }
+      100% { box-shadow: 0 0 80px var(--primary), 0 0 20px #fff; transform: scale(1.05); }
     }
 
-    .splash-title { font-size: 2rem; font-weight: 800; margin-bottom: 10px; color: #fff; }
-    .splash-sub { color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem; }
-    .splash-buttons { display: flex; gap: 20px; }
+    .splash-title { font-size: 3rem; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
+    .splash-sub { color: var(--text-muted); margin-bottom: 50px; font-size: 1.2rem; font-weight: 500; }
+    .splash-buttons { display: flex; gap: 30px; }
 
     .splash-btn {
       background: var(--surface); border: 1px solid var(--border); color: var(--text-main);
-      padding: 20px 40px; border-radius: 20px; font-size: 1.1rem; font-weight: 600;
-      cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 24px 50px; border-radius: 24px; font-size: 1.2rem; font-weight: 700;
+      cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex; flex-direction: column; align-items: center; gap: 15px;
+      backdrop-filter: blur(10px); position: relative; overflow: hidden;
     }
+
+    /* Блик на кнопках */
+    .splash-btn::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg); transition: all 0.5s; opacity: 0;
+    }
+
+    .splash-btn:hover::before { opacity: 1; left: 100%; }
 
     .splash-btn:hover {
       background: var(--primary-dim); border-color: var(--primary);
-      transform: translateY(-5px); box-shadow: 0 10px 30px rgba(192, 132, 252, 0.2);
+      transform: translateY(-10px) scale(1.05); box-shadow: 0 20px 40px rgba(192, 132, 252, 0.3);
     }
 
-    .splash-btn svg { width: 32px; height: 32px; fill: var(--primary); }
+    .splash-btn svg { width: 40px; height: 40px; fill: var(--primary); filter: drop-shadow(0 0 10px var(--primary)); }
 
-    /* --- МОБИЛЬНАЯ ВЕРСИЯ --- */
+    /* =========================================
+       МОБИЛЬНАЯ ВЕРСИЯ
+       ========================================= */
     .mobile-header {
       position: fixed; top: 16px; left: 0; width: 100%; z-index: 100; padding: 0 12px;
     }
     .mobile-header-inner {
-      max-width: 600px; margin: 0 auto; background: rgba(18, 18, 22, 0.7);
+      max-width: 600px; margin: 0 auto; background: rgba(18, 18, 22, 0.6);
       backdrop-filter: blur(20px); border: 1px solid var(--border);
       border-radius: 30px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .mobile-header-left { display: flex; align-items: center; gap: 8px; }
     .menu-btn {
@@ -92,82 +157,96 @@
       border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer;
     }
     .menu-btn span { display: block; width: 16px; height: 2px; background: var(--text-main); border-radius: 2px; }
-    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 1rem; }
-    .logo img { height: 28px; width: 28px; border-radius: 8px; object-fit: cover; box-shadow: 0 0 10px rgba(192, 132, 252, 0.6); }
-    .header-btn { background: var(--primary); color: #000; text-decoration: none; padding: 8px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 1rem; }
+    .logo img { height: 28px; width: 28px; border-radius: 8px; object-fit: cover; box-shadow: 0 0 15px var(--primary-glow); }
+    .header-btn { background: var(--primary); color: #000; text-decoration: none; padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
 
     .mobile-nav-menu {
       position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
       background: var(--surface); z-index: 101; padding: 30px 20px;
       transition: left 0.4s; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px;
+      backdrop-filter: blur(30px);
     }
     .mobile-nav-menu.active { left: 0; }
-    .mobile-nav-menu a { color: var(--text-main); text-decoration: none; font-size: 1.1rem; font-weight: 500; padding: 12px 16px; border-radius: 12px; }
-    .mobile-nav-menu a:hover { background: var(--primary-dim); color: var(--primary); }
+    .mobile-nav-menu a { color: var(--text-main); text-decoration: none; font-size: 1.1rem; font-weight: 600; padding: 12px 16px; border-radius: 12px; }
+    .mobile-nav-menu a:hover { background: rgba(192, 132, 252, 0.2); color: var(--primary); }
 
     .mobile-container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
-    .mobile-hero { padding: 130px 0 60px; text-align: center; }
-    .badge { display: inline-flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; margin-bottom: 24px; }
-    .badge img { width: 22px; height: 22px; border-radius: 50%; }
-    .mobile-hero h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; background: linear-gradient(135deg, #fff 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .mobile-hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px; }
-    .main-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: #000; padding: 16px 32px; border-radius: 25px; font-size: 1.05rem; font-weight: 600; text-decoration: none; width: 100%; max-width: 300px; }
+    .mobile-hero { padding: 140px 0 60px; text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 0.95rem; font-weight: 700; margin-bottom: 24px; backdrop-filter: blur(10px); }
+    .badge img { width: 24px; height: 24px; border-radius: 50%; }
+    .mobile-hero h1 { font-size: 2.4rem; font-weight: 900; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
+    .mobile-hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px; font-weight: 500; }
+    .main-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: #000; padding: 18px 32px; border-radius: 25px; font-size: 1.1rem; font-weight: 800; text-decoration: none; width: 100%; max-width: 300px; box-shadow: 0 10px 30px var(--primary-glow); }
 
-    .mobile-section { padding: 40px 0; }
-    .mobile-section-title { font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+    .mobile-section { padding: 50px 0; }
+    .mobile-section-title { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 20px; letter-spacing: -0.5px; }
     
     .gallery-tabs { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; }
-    .tab-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
-    .gallery-display { border-radius: 24px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); aspect-ratio: 16 / 10; }
+    .tab-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 10px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+    .tab-btn.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+    .gallery-display { border-radius: 24px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); aspect-ratio: 16 / 10; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
     .gallery-display img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
 
     .mobile-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    .mobile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; }
-    .mobile-card-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--primary-dim); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; padding: 10px; overflow: hidden; }
+    .mobile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; backdrop-filter: blur(10px); transition: transform 0.3s; }
+    .mobile-card:active { transform: scale(0.98); }
+    .mobile-card-icon { width: 54px; height: 54px; border-radius: 16px; background: rgba(192, 132, 252, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; padding: 12px; box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2); }
     .mobile-card-icon img { width: 100%; height: 100%; object-fit: contain; filter: invert(65%) sepia(80%) saturate(5000%) hue-rotate(240deg) brightness(120%) contrast(100%); mix-blend-mode: screen; }
-    .mobile-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
-    .mobile-card p { color: var(--text-muted); font-size: 0.95rem; }
+    .mobile-card h3 { font-size: 1.3rem; margin-bottom: 8px; font-weight: 700; }
+    .mobile-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
 
     .mobile-download-buttons { display: flex; flex-direction: column; gap: 12px; }
-    .mobile-btn-platform { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-main); text-decoration: none; font-weight: 600; }
+    .mobile-btn-platform { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s; }
+    .mobile-btn-platform:active { background: var(--surface-hover); }
 
-    /* --- ПК ВЕРСИЯ --- */
-    #desktopSite { background-image: linear-gradient(rgba(192, 132, 252, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192, 132, 252, 0.03) 1px, transparent 1px); background-size: 50px 50px; min-height: 100vh; }
-    .desktop-header { padding: 20px 0; border-bottom: 1px solid var(--border); background: rgba(9, 9, 11, 0.8); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; }
+    /* =========================================
+       ПК ВЕРСИЯ (ТОПОВЫЙ ДИЗАЙН)
+       ========================================= */
+    #desktopSite { min-height: 100vh; }
+    
+    .desktop-header {
+      padding: 20px 0; border-bottom: 1px solid var(--border);
+      background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(20px);
+      position: sticky; top: 0; z-index: 100;
+    }
     .desktop-header-inner { display: flex; justify-content: space-between; align-items: center; }
     .desktop-nav { display: flex; gap: 30px; }
-    .desktop-nav a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.3s; }
-    .desktop-nav a:hover { color: var(--primary); }
+    .desktop-nav a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 1rem; transition: color 0.3s; }
+    .desktop-nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
 
-    .desktop-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 100px 0; min-height: 80vh; }
-    .desktop-hero-text h1 { font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 24px; background: linear-gradient(135deg, #fff 20%, #a855f7 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -2px; }
-    .desktop-hero-text p { font-size: 1.3rem; color: var(--text-muted); margin-bottom: 40px; max-width: 500px; }
-    .desktop-main-btn { background: var(--primary); color: #000; padding: 18px 40px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(192, 132, 252, 0.4); transition: all 0.3s; }
-    .desktop-main-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(192, 132, 252, 0.6); }
+    .desktop-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; padding: 120px 0; min-height: 90vh; }
+    .desktop-hero-text h1 { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 30px; letter-spacing: -2px; filter: drop-shadow(0 0 30px rgba(192, 132, 252, 0.3)); }
+    .desktop-hero-text p { font-size: 1.4rem; color: var(--text-muted); margin-bottom: 50px; max-width: 500px; line-height: 1.6; font-weight: 500; }
+    .desktop-main-btn { background: var(--primary); color: #000; padding: 20px 50px; border-radius: 16px; font-size: 1.2rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 10px 40px var(--primary-glow); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+    .desktop-main-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: all 0.5s; }
+    .desktop-main-btn:hover::before { left: 100%; }
+    .desktop-main-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 50px rgba(192, 132, 252, 0.6); }
 
     .desktop-hero-image { perspective: 1000px; }
-    .desktop-hero-image img { width: 100%; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 50px rgba(192, 132, 252, 0.2); transform: rotateY(-10deg) rotateX(5deg); transition: transform 0.5s; }
-    .desktop-hero-image img:hover { transform: rotateY(0) rotateX(0) scale(1.02); }
+    .desktop-hero-image img { width: 100%; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(192, 132, 252, 0.2); transform: rotateY(-15deg) rotateX(5deg); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .desktop-hero-image img:hover { transform: rotateY(0) rotateX(0) scale(1.05); }
 
-    .desktop-features { padding: 100px 0; background: rgba(18, 18, 22, 0.5); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 50px; }
-    .desktop-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; display: flex; align-items: flex-start; gap: 20px; transition: all 0.3s; }
-    .desktop-card:hover { border-color: rgba(192, 132, 252, 0.4); transform: translateY(-5px); }
-    .desktop-card-icon { width: 60px; height: 60px; border-radius: 16px; background: var(--primary-dim); display: flex; align-items: center; justify-content: center; padding: 12px; flex-shrink: 0; overflow: hidden; }
+    .desktop-features { padding: 120px 0; background: rgba(10, 10, 15, 0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 60px; }
+    .desktop-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 40px; display: flex; align-items: flex-start; gap: 25px; transition: all 0.4s; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+    .desktop-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0; transition: opacity 0.3s; }
+    .desktop-card:hover { border-color: rgba(192, 132, 252, 0.4); transform: translateY(-10px); background: var(--surface-hover); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    .desktop-card:hover::after { opacity: 1; }
+    .desktop-card-icon { width: 70px; height: 70px; border-radius: 20px; background: rgba(192, 132, 252, 0.1); display: flex; align-items: center; justify-content: center; padding: 15px; flex-shrink: 0; overflow: hidden; box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2); }
     .desktop-card-icon img { width: 100%; height: 100%; filter: invert(65%) sepia(80%) saturate(5000%) hue-rotate(240deg) brightness(120%) contrast(100%); mix-blend-mode: screen; }
-    .desktop-card h3 { font-size: 1.5rem; margin-bottom: 12px; }
-    .desktop-card p { color: var(--text-muted); font-size: 1rem; }
+    .desktop-card h3 { font-size: 1.6rem; margin-bottom: 12px; font-weight: 800; }
+    .desktop-card p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; }
 
-    .desktop-download { padding: 100px 0; text-align: center; }
-    .desktop-download h2 { font-size: 3rem; margin-bottom: 20px; }
-    .desktop-download-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 40px; }
-    .desktop-btn-platform { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 40px; border-radius: 16px; text-decoration: none; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
-    .desktop-btn-platform:hover { background: var(--primary-dim); border-color: var(--primary); transform: translateY(-5px); color: var(--primary); }
+    .desktop-download { padding: 120px 0; text-align: center; }
+    .desktop-download h2 { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px; }
+    .desktop-download-buttons { display: flex; justify-content: center; gap: 25px; margin-top: 50px; }
+    .desktop-btn-platform { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 24px 50px; border-radius: 20px; text-decoration: none; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 15px; transition: all 0.3s; backdrop-filter: blur(10px); }
+    .desktop-btn-platform:hover { background: rgba(192, 132, 252, 0.15); border-color: var(--primary); transform: translateY(-5px); color: var(--primary); box-shadow: 0 15px 30px rgba(192, 132, 252, 0.2); }
 
     @media (max-width: 900px) {
-      .desktop-hero { grid-template-columns: 1fr; padding: 50px 0; text-align: center; }
-      .desktop-hero-text h1 { font-size: 3rem; }
+      .desktop-hero { grid-template-columns: 1fr; padding: 60px 0; text-align: center; }
+      .desktop-hero-text h1 { font-size: 3.5rem; }
       .desktop-hero-text p { margin: 0 auto 30px; }
       .desktop-hero-image { display: none; }
       .desktop-grid { grid-template-columns: 1fr; }
@@ -178,18 +257,24 @@
 </head>
 <body>
 
-  <!-- ЭКРАН ВЫБОРА (появляется при загрузке) -->
+  <!-- Фоновые эффекты -->
+  <div class="ambient-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ЭКРАН ВЫБОРА -->
   <div id="splashScreen">
     <img src="logo.png" alt="Logo" class="splash-logo">
-    <h1 class="splash-title">EnvyClient</h1>
+    <h1 class="splash-title gradient-text">EnvyClient</h1>
     <p class="splash-sub">Выберите ваше устройство</p>
     <div class="splash-buttons">
-      <!-- Кнопка ПК -->
       <button class="splash-btn" onclick="showSite('desktop')">
         <svg viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></svg>
         Компьютер
       </button>
-      <!-- Кнопка Телефон -->
       <button class="splash-btn" onclick="showSite('mobile')">
         <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
         Телефон
@@ -197,13 +282,10 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- МОБИЛЬНАЯ ВЕРСИЯ                           -->
-  <!-- ========================================== -->
+  <!-- МОБИЛЬНАЯ ВЕРСИЯ -->
   <div id="mobileSite" class="hidden">
-    
     <nav class="mobile-nav-menu" id="navMenu">
-      <h2 style="color:var(--primary); margin-bottom:20px;">Меню</h2>
+      <h2 style="color:var(--primary); margin-bottom:20px; font-weight:800;">Меню</h2>
       <a href="#m-hero" onclick="toggleMenu()">Главная</a>
       <a href="#m-gallery" onclick="toggleMenu()">Скриншоты</a>
       <a href="#m-features" onclick="toggleMenu()">Функционал</a>
@@ -214,73 +296,65 @@
     <header class="mobile-header">
       <div class="mobile-header-inner">
         <div class="mobile-header-left">
-          <div class="menu-btn" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
-          </div>
-          <a href="#" class="logo">
-            <img src="logo.png" alt="EnvyClient"> EnvyClient
-          </a>
+          <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+          <a href="#" class="logo"><img src="logo.png" alt="Logo"> EnvyClient</a>
         </div>
         <a href="https://t.me/EnvyClient1337" target="_blank" class="header-btn">Telegram</a>
       </div>
     </header>
 
     <section class="mobile-hero mobile-container" id="m-hero">
-      <div class="badge"><img src="images.png" alt="DDNet"> DDNet</div>
-      <h1>Уничтожай эго<br>каждого игрока<br>на любом сервере</h1>
-      <p>с лучшим читом для DDNet</p>
-      <a href="#m-download" class="main-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <div class="badge fade-up"><img src="images.png" alt="DDNet"> DDNet</div>
+      <h1 class="gradient-text fade-up">Уничтожай эго<br>каждого игрока<br>на любом сервере</h1>
+      <p class="fade-up">с лучшим читом для DDNet</p>
+      <a href="#m-download" class="main-btn fade-up">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         Скачать
       </a>
     </section>
 
     <section class="mobile-section mobile-container" id="m-gallery">
-      <h2 class="mobile-section-title">Галерея</h2>
-      <div class="gallery-tabs">
+      <h2 class="mobile-section-title gradient-text fade-up">Галерея</h2>
+      <div class="gallery-tabs fade-up">
         <button class="tab-btn active" onclick="changeTab(this, 'screen1.png')">Меню</button>
         <button class="tab-btn" onclick="changeTab(this, 'screen2.png')">Avoid</button>
         <button class="tab-btn" onclick="changeTab(this, 'screen3.png')">TAS</button>
         <button class="tab-btn" onclick="changeTab(this, 'screen5.png')">Aimbot</button>
         <button class="tab-btn" onclick="changeTab(this, 'screen4.png')">Visuals</button>
       </div>
-      <div class="gallery-display"><img src="screen1.png" id="mainScreenImage" alt="Screen"></div>
+      <div class="gallery-display fade-up"><img src="screen1.png" id="mainScreenImage" alt="Screen"></div>
     </section>
 
     <section class="mobile-section mobile-container" id="m-features">
-      <h2 class="mobile-section-title">Функционал</h2>
+      <h2 class="mobile-section-title gradient-text fade-up">Функционал</h2>
       <div class="mobile-grid">
-        <div class="mobile-card"><div class="mobile-card-icon"><img src="aim.png"></div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent.</p></div>
-        <div class="mobile-card"><div class="mobile-card-icon"><img src="av.png"></div><h3>Avoid System</h3><p>Авто-спасение от опасных тайлов. Режимы Legit и Blatant.</p></div>
-        <div class="mobile-card"><div class="mobile-card-icon"><img src="tas.png"></div><h3>TAS</h3><p>Запись, пауза, воспроизведение и импорт .tas файлов.</p></div>
-        <div class="mobile-card"><div class="mobile-card-icon"><img src="vis.png"></div><h3>Visuals</h3><p>Ушки, хвост, крылья, кагуне, эффекты и анимации AFK.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="aim.png"></div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="av.png"></div><h3>Avoid System</h3><p>Авто-спасение от опасных тайлов. Режимы Legit и Blatant.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="tas.png"></div><h3>TAS</h3><p>Запись, пауза, воспроизведение и импорт .tas файлов.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="vis.png"></div><h3>Visuals</h3><p>Ушки, хвост, крылья, кагуне, эффекты и анимации AFK.</p></div>
       </div>
     </section>
 
     <section class="mobile-section mobile-container" id="m-download">
-      <h2 class="mobile-section-title">Скачать</h2>
-      <div class="mobile-download-buttons">
+      <h2 class="mobile-section-title gradient-text fade-up">Скачать</h2>
+      <div class="mobile-download-buttons fade-up">
         <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="mobile-btn-platform"><span>Windows</span><span>💻</span></a>
         <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="mobile-btn-platform"><span>Android</span><span>📱</span></a>
         <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="mobile-btn-platform"><span>Linux</span><span>🐧</span></a>
       </div>
     </section>
     
-    <footer style="text-align:center; padding: 40px 0; border-top: 1px solid var(--border);">
-      <div style="color:var(--text-muted); margin-bottom: 20px;">Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:var(--primary); text-decoration:none;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:var(--primary); text-decoration:none;">@wakizashu</a></div>
-      <a href="https://t.me/EnvyClient1337" style="color:var(--primary); text-decoration:none;">Telegram-канал</a>
+    <footer style="text-align:center; padding: 40px 0; border-top: 1px solid var(--border); margin-top: 40px;">
+      <div style="color:var(--text-muted); margin-bottom: 20px; font-weight: 500;">Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:var(--primary); text-decoration:none; font-weight: 700;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:var(--primary); text-decoration:none; font-weight: 700;">@wakizashu</a></div>
     </footer>
   </div>
 
-  <!-- ========================================== -->
-  <!-- ПК ВЕРСИЯ                                  -->
-  <!-- ========================================== -->
+  <!-- ПК ВЕРСИЯ -->
   <div id="desktopSite" class="hidden">
-    
     <header class="desktop-header">
       <div class="container desktop-header-inner">
         <a href="#" class="logo" style="font-size: 1.5rem;">
-          <img src="logo.png" alt="EnvyClient" style="width: 40px; height: 40px; border-radius: 12px;"> EnvyClient
+          <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 12px; box-shadow: 0 0 20px var(--primary-glow);"> EnvyClient
         </a>
         <nav class="desktop-nav">
           <a href="#d-features">Возможности</a>
@@ -293,40 +367,40 @@
 
     <section class="container desktop-hero">
       <div class="desktop-hero-text">
-        <div class="badge"><img src="images.png" alt="DDNet"> DDNet Client</div>
-        <h1>Доминируй на<br>каждом сервере</h1>
-        <p>Лучший чит для DDNet с продвинутым Aimbot, системой Avoid и огромным количеством визуальных настроек. Полная автоматизация действий.</p>
-        <div>
+        <div class="badge fade-up" style="margin-bottom: 30px;"><img src="images.png" alt="DDNet"> DDNet Client</div>
+        <h1 class="gradient-text fade-up">Доминируй на<br>каждом сервере</h1>
+        <p class="fade-up">Лучший чит для DDNet с продвинутым Aimbot, системой Avoid и огромным количеством визуальных настроек. Полная автоматизация действий.</p>
+        <div class="fade-up">
           <a href="#d-download" class="desktop-main-btn">
             Скачать клиент
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           </a>
         </div>
       </div>
-      <div class="desktop-hero-image">
+      <div class="desktop-hero-image fade-up">
         <img src="screen1.png" alt="EnvyClient Interface">
       </div>
     </section>
 
     <section class="desktop-features" id="d-features">
       <div class="container">
-        <h2 style="font-size: 3rem; text-align: center; margin-bottom: 10px;">Функционал</h2>
-        <p style="text-align: center; color: var(--text-muted); font-size: 1.2rem;">Всё, что нужно для доминации</p>
+        <h2 class="gradient-text fade-up" style="font-size: 3.5rem; font-weight:900; text-align: center; margin-bottom: 10px; letter-spacing:-1px;">Функционал</h2>
+        <p class="fade-up" style="text-align: center; color: var(--text-muted); font-size: 1.2rem; font-weight: 500;">Всё, что нужно для доминации</p>
 
         <div class="desktop-grid">
-          <div class="desktop-card">
+          <div class="desktop-card fade-up">
             <div class="desktop-card-icon"><img src="aim.png" alt="Aim"></div>
             <div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent и поддержкой всех видов оружия (Hook, Hammer, Gun, Shotgun, Grenade).</p></div>
           </div>
-          <div class="desktop-card">
+          <div class="desktop-card fade-up">
             <div class="desktop-card-icon"><img src="av.png" alt="Avoid"></div>
             <div><h3>Avoid System</h3><p>Умная система автоматического спасения от опасных тайлов. Режимы Legit и Blatant, настройка опасных тайлов и Rescue Aim.</p></div>
           </div>
-          <div class="desktop-card">
+          <div class="desktop-card fade-up">
             <div class="desktop-card-icon"><img src="tas.png" alt="TAS"></div>
             <div><h3>TAS</h3><p>Полноценный Tool-Assisted Speedrun. Запись, пауза, воспроизведение, библиотека записей и импорт .tas файлов.</p></div>
           </div>
-          <div class="desktop-card">
+          <div class="desktop-card fade-up">
             <div class="desktop-card-icon"><img src="vis.png" alt="Visuals"></div>
             <div><h3>Visuals</h3><p>Огромное количество визуальных настроек: ушки, хвост, крылья, кагуне, эффекты, кастомные лица и анимации AFK.</p></div>
           </div>
@@ -336,60 +410,106 @@
 
     <section class="desktop-download" id="d-download">
       <div class="container">
-        <h2>Скачать EnvyClient</h2>
-        <p style="color: var(--text-muted); font-size: 1.2rem;">Выберите вашу операционную систему</p>
-        <div class="desktop-download-buttons">
-          <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.5rem;">💻</span> Windows (.zip)</a>
-          <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.5rem;">📱</span> Android (.apk)</a>
-          <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.5rem;">🐧</span> Linux (.tar.gz)</a>
+        <h2 class="gradient-text fade-up">Скачать EnvyClient</h2>
+        <p class="fade-up" style="color: var(--text-muted); font-size: 1.2rem; font-weight: 500;">Выберите вашу операционную систему</p>
+        <div class="desktop-download-buttons fade-up">
+          <a href="https://drive.usercontent.google.com/download?id=1Nv_HFlj1IKhmQw4Eq9F_UIAxgMG1TuHC&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">💻</span> Windows (.zip)</a>
+          <a href="https://drive.usercontent.google.com/download?id=1Inz1R4sMPcKOPCZQDJjQMvGTPO638Pkz&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">📱</span> Android (.apk)</a>
+          <a href="https://drive.usercontent.google.com/download?id=1UEUz_HZqn2pbSIK2vIX5ELjIH6t5p_8f&export=download&confirm=t" class="desktop-btn-platform"><span style="font-size: 1.8rem;">🐧</span> Linux (.tar.gz)</a>
         </div>
-        <div style="margin-top: 50px; color: var(--text-muted);">
-          Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:var(--primary); text-decoration:none;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:var(--primary); text-decoration:none;">@wakizashu</a>
+        <div class="fade-up" style="margin-top: 60px; color: var(--text-muted); font-weight: 500;">
+          Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:var(--primary); text-decoration:none; font-weight: 700;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:var(--primary); text-decoration:none; font-weight: 700;">@wakizashu</a>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- СКРИПТЫ (ТЕ САМЫЕ КНОПКИ) -->
+  <!-- СКРИПТЫ -->
   <script>
-    // Функция переключения экранов
+    // 1. Переключение экранов
     function showSite(type) {
-      // Прячем экран выбора
       document.getElementById('splashScreen').classList.add('hidden');
-      
-      // Показываем нужный сайт
       if (type === 'mobile') {
         document.getElementById('mobileSite').classList.remove('hidden');
       } else {
         document.getElementById('desktopSite').classList.remove('hidden');
       }
+      setTimeout(initAnimations, 100); // Запускаем анимации появления
     }
 
-    // Функция возврата к выбору (кнопка "Сменить устройство")
     function resetPlatform() {
       document.getElementById('mobileSite').classList.add('hidden');
       document.getElementById('desktopSite').classList.add('hidden');
       document.getElementById('splashScreen').classList.remove('hidden');
+      window.scrollTo(0, 0);
     }
 
-    // Логика для мобильной версии (меню и галерея)
+    // 2. Меню и галерея мобилки
     function toggleMenu() {
       document.getElementById('navMenu').classList.toggle('active');
     }
 
     function changeTab(btn, imageSrc) {
-      // Убираем активный класс у всех кнопок
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      // Добавляем нажатой
       btn.classList.add('active');
-      
-      // Меняем картинку
       const img = document.getElementById('mainScreenImage');
       img.style.opacity = 0;
       setTimeout(() => {
         img.src = imageSrc;
         img.style.opacity = 1;
       }, 200);
+    }
+
+    // 3. Свечение за курсором (только на ПК)
+    const cursorGlow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', (e) => {
+      cursorGlow.style.left = e.clientX + 'px';
+      cursorGlow.style.top = e.clientY + 'px';
+    });
+
+    // 4. Анимация появления при скролле (Fade-up)
+    function initAnimations() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }
+    // Запускаем при первой загрузке
+    initAnimations();
+
+    // 5. 3D Эффект наклона для ПК (Только для больших экранов)
+    if (window.innerWidth > 900) {
+      const cards = document.querySelectorAll('.desktop-card, .desktop-hero-image img');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -5;
+          const rotateY = ((x - centerX) / centerX) * 5;
+          
+          if (card.tagName === 'IMG') {
+            card.style.transform = `rotateY(${rotateY - 10}deg) rotateX(${rotateX + 5}deg) scale(1.02)`;
+          } else {
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+          }
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          if (card.tagName === 'IMG') {
+            card.style.transform = `rotateY(-10deg) rotateX(5deg) scale(1)`;
+          } else {
+            card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0)`;
+          }
+        });
+      });
     }
   </script>
 </body>

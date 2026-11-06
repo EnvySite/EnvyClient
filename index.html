@@ -365,7 +365,7 @@
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Красивые иконки: делаем их фиолетовыми и убираем белый фон */
+    /* Красивые иконки: делаем их фиолетовыми и убираем белый/черный фон */
     .card-icon {
       width: 48px;
       height: 48px;
@@ -377,15 +377,16 @@
       margin-bottom: 16px;
       box-shadow: inset 0 0 15px rgba(192, 132, 252, 0.1);
       padding: 10px;
+      overflow: hidden; /* Чтобы фильтр не вылезал за края */
     }
 
     .card-icon img { 
       width: 100%; 
       height: 100%; 
       object-fit: contain; 
-      /* Этот фильтр делает твои белые иконки фиолетовыми и убирает белый фон! */
-      filter: invert(75%) sepia(50%) saturate(3000%) hue-rotate(230deg) brightness(110%) contrast(110%);
-      opacity: 0.9;
+      /* Фильтр: убирает белый/черный фон и делает иконки неоново-фиолетовыми */
+      filter: invert(65%) sepia(80%) saturate(5000%) hue-rotate(240deg) brightness(120%) contrast(100%);
+      mix-blend-mode: screen; /* Магия: темный фон становится прозрачным */
     }
 
     .card h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-main); }
@@ -728,7 +729,7 @@
       lastScroll = currentScroll;
     });
 
-    // Анимация появления элементов (Fade-in)
+    // Анимация появления элементов
     const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

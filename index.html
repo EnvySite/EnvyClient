@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EnvyClient — С Новым Годом!</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <style>
+    /* =========================================
+       ТОКЕНЫ — WINTER EDITION
+       ========================================= */
+    :root {
+      --bg: #060a14;
+      --bg-2: #0a1020;
+      --surface: rgba(18, 26, 45, 0.55);
+      --surface-hi: rgba(28, 40, 65, 0.85);
+      --line: rgba(180, 220, 255, 0.08);
+      --line-hi: rgba(180, 220, 255, 0.18);
+      --text: #eaf2ff;
+      --muted: #8a9bb5;
+      --accent: #4cc9f0;        /* ледяной голубой */
+      --accent-2: #ffd166;      /* тёплое золото гирлянды */
+      --accent-glow: rgba(76, 201, 240, 0.5);
+      --radius: 22px;
+      --radius-lg: 30px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(1200px 600px at 10% -10%, rgba(76, 201, 240, 0.20), transparent 55%),
+        radial-gradient(1000px 700px at 95% 110%, rgba(255, 209, 102, 0.12), transparent 55%),
+        linear-gradient(180deg, #060a14 0%, #0a1428 100%);
+      background-attachment: fixed;
+    }
+
+    /* Снег на фоне */
+    #snowCanvas {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.8;
+    }
+
+    /* Гирлянда сверху */
+    #garland {
+      position: fixed; top: 0; left: 0; width: 100%; height: 40px; z-index: 99;
+      pointer-events: none;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -3; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(circle at 50% 30%, #000 25%, transparent 80%);
+    }
+
+    .ambient-bg { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+    .blob { position: absolute; filter: blur(120px); border-radius: 50%; opacity: 0.3; animation: float 22s infinite ease-in-out alternate; }
+    .blob-1 { width: 520px; height: 520px; background: var(--accent); top: -12%; left: -10%; }
+    .blob-2 { width: 620px; height: 620px; background: var(--accent-2); bottom: -22%; right: -12%; animation-delay: -6s; opacity: .18; }
+    .blob-3 { width: 380px; height: 380px; background: #7bdff2; top: 42%; left: 28%; animation-delay: -12s; opacity: .14; }
+    @keyframes float { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(48px, 36px) scale(1.1); } 100% { transform: translate(-32px, 60px) scale(0.92); } }
+
+    .cursor-glow { position: fixed; width: 420px; height: 420px; background: radial-gradient(circle, rgba(76,201,240,.18) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: -1; transform: translate(-50%,-50%); transition: opacity .3s; }
+    @media (max-width: 900px) { .cursor-glow { display: none; } }
+
+    .hidden { display: none !important; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    h1, h2, h3, .splash-title { font-family: 'Space Grotesk', system-ui, sans-serif; }
+
+    /* Зимний градиент: лёд → золото */
+    .gradient-text {
+      background: linear-gradient(100deg, #ffffff 0%, #a8e6ff 35%, #ffd166 70%, #ffffff 100%);
+      background-size: 250% auto;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      animation: shine 6s linear infinite;
+    }
+    @keyframes shine { to { background-position: 250% center; } }
+
+    /* =========================================
+       SPLASH
+       ========================================= */
+    #splashScreen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; }
+
+    .splash-logo {
+      width: 108px; height: 108px; border-radius: 28px; object-fit: cover; cursor: pointer;
+      border: 1px solid var(--line-hi);
+      box-shadow: 0 0 50px var(--accent-glow), inset 0 0 24px rgba(255,255,255,.08);
+      margin-bottom: 32px;
+      animation: pulseGlow 2.4s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 26px var(--accent-glow); transform: scale(1); }
+      100% { box-shadow: 0 0 70px var(--accent), 0 0 22px var(--accent-2); transform: scale(1.04); }
+    }
+
+    .splash-title { font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 700; letter-spacing: -.03em; text-align: center; margin-bottom: 8px; }
+    .splash-sub { color: var(--muted); margin-bottom: 44px; font-size: 1rem; font-weight: 500; text-align: center; letter-spacing: .02em; }
+
+    .splash-buttons { display: flex; gap: 16px; width: 100%; max-width: 520px; justify-content: center; }
+
+    .splash-btn {
+      flex: 1; max-width: 220px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding: 26px 20px; border-radius: var(--radius);
+      background: var(--surface); border: 1px solid var(--line-hi);
+      color: var(--text); font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: all .3s ease; backdrop-filter: blur(14px);
+      position: relative; overflow: hidden;
+    }
+    .splash-btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.08) 50%, transparent 70%);
+      transform: translateX(-100%); transition: transform .6s;
+    }
+    .splash-btn:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 22px 44px -18px var(--accent-glow); }
+    .splash-btn:hover::after { transform: translateX(100%); }
+    .splash-btn:active { transform: scale(.97); }
+    .splash-btn svg { width: 30px; height: 30px; fill: var(--accent-2); filter: drop-shadow(0 0 8px var(--accent-2)); }
+
+    /* =========================================
+       МОБИЛЬНАЯ ВЕРСИЯ
+       ========================================= */
+    .mobile-header { position: fixed; top: 16px; left: 0; width: 100%; z-index: 100; padding: 0 14px; }
+    .mobile-header-inner {
+      max-width: 600px; margin: 0 auto;
+      background: rgba(14, 20, 36, 0.72); backdrop-filter: blur(24px);
+      border: 1px solid var(--line-hi); border-radius: 22px;
+      padding: 9px 14px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 12px 34px rgba(0,0,0,.55);
+    }
+    .mobile-header-left { display: flex; align-items: center; gap: 10px; }
+    .menu-btn { width: 38px; height: 38px; border-radius: 12px; background: var(--surface-hi); border: 1px solid var(--line-hi); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer; }
+    .menu-btn span { display: block; width: 16px; height: 2px; background: var(--text); border-radius: 2px; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; }
+    .logo img { height: 28px; width: 28px; border-radius: 9px; object-fit: cover; box-shadow: 0 0 14px var(--accent-glow); }
+    .header-btn { background: linear-gradient(120deg, var(--accent), #69dbff); color: #06121f; text-decoration: none; padding: 9px 16px; border-radius: 12px; font-weight: 700; font-size: .85rem; transition: box-shadow .3s; }
+    .header-btn:hover { box-shadow: 0 0 22px var(--accent-glow); }
+
+    .mobile-nav-menu { position: fixed; top: 0; left: -100%; width: 280px; height: 100vh; background: rgba(10, 16, 32, .94); backdrop-filter: blur(30px); z-index: 101; padding: 32px 22px; transition: left .4s cubic-bezier(.16,1,.3,1); border-right: 1px solid var(--line-hi); display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+    .mobile-nav-menu.active { left: 0; }
+    .mobile-nav-menu a { color: var(--text); text-decoration: none; font-size: 1.05rem; font-weight: 600; padding: 13px 16px; border-radius: 14px; display: block; transition: all .2s; }
+    .mobile-nav-menu a:hover { background: rgba(76,201,240,.16); color: #a8e6ff; }
+
+    .mobile-container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
+    .mobile-hero { padding: 140px 0 64px; text-align: center; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--line-hi);
+      padding: 8px 18px; border-radius: 100px; font-size: .9rem; font-weight: 600;
+      margin-bottom: 26px; backdrop-filter: blur(12px);
+    }
+    .badge img { width: 24px; height: 24px; border-radius: 50%; }
+
+    .mobile-hero h1 { font-size: clamp(2.2rem, 9vw, 2.9rem); font-weight: 700; line-height: 1.05; margin-bottom: 16px; letter-spacing: -.03em; }
+    .mobile-hero p { font-size: 1.05rem; color: var(--muted); margin-bottom: 32px; font-weight: 500; }
+
+    .main-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: linear-gradient(120deg, var(--accent), #69dbff);
+      color: #06121f; padding: 18px 34px; border-radius: 18px;
+      font-size: 1.05rem; font-weight: 700; text-decoration: none;
+      width: 100%; max-width: 320px;
+      box-shadow: 0 16px 40px -14px var(--accent-glow);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .main-btn:hover { transform: translateY(-3px); box-shadow: 0 22px 48px -14px var(--accent-glow); }
+
+    .mobile-section { padding: 56px 0; }
+    .mobile-section-title { font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 28px; letter-spacing: -.02em; line-height: 1.2; padding-bottom: 4px; }
+
+    .gallery-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 18px; margin-bottom: 18px; scrollbar-width: none; }
+    .gallery-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: var(--surface); border: 1px solid var(--line-hi);
+      color: var(--muted); padding: 10px 20px; border-radius: 100px;
+      font-family: 'Space Grotesk', sans-serif; font-size: .88rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: all .3s;
+    }
+    .tab-btn.active { background: linear-gradient(120deg, var(--accent), #69dbff); color: #06121f; border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+    .gallery-display { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--line-hi); background: var(--bg-2); aspect-ratio: 16/10; box-shadow: 0 24px 50px rgba(0,0,0,.6); }
+    .gallery-display img { width: 100%; height: 100%; object-fit: cover; transition: opacity .3s; }
+
+    .mobile-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .mobile-card { background: var(--surface); border: 1px solid var(--line-hi); border-radius: var(--radius); padding: 26px; backdrop-filter: blur(12px); transition: transform .3s, border-color .3s; }
+    .mobile-card:hover { transform: translateY(-4px); border-color: rgba(76,201,240,.4); }
+    .mobile-card-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(76,201,240,.12); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; padding: 13px; box-shadow: inset 0 0 22px rgba(76,201,240,.18); }
+    .mobile-card-icon img { width: 100%; height: 100%; object-fit: contain; filter: invert(70%) sepia(60%) saturate(400%) hue-rotate(160deg) brightness(120%); mix-blend-mode: screen; }
+    .mobile-card h3 { font-size: 1.25rem; margin-bottom: 8px; font-weight: 700; }
+    .mobile-card p { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+
+    .mobile-download-buttons { display: flex; flex-direction: column; gap: 12px; }
+    .mobile-btn-platform {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; background: var(--surface); border: 1px solid var(--line-hi);
+      border-radius: var(--radius); color: var(--text); font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(12px);
+      transition: all .3s; cursor: pointer;
+    }
+    .mobile-btn-platform:hover { border-color: var(--accent); background: var(--surface-hi); transform: translateY(-3px); }
+
+    /* =========================================
+       ПК ВЕРСИЯ
+       ========================================= */
+    #desktopSite { min-height: 100vh; }
+
+    .desktop-header { padding: 20px 0; border-bottom: 1px solid var(--line); background: rgba(6,10,20,.7); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; }
+    .desktop-header-inner { display: flex; justify-content: space-between; align-items: center; }
+    .desktop-nav { display: flex; gap: 32px; }
+    .desktop-nav a { color: var(--muted); text-decoration: none; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: .95rem; transition: color .3s; }
+    .desktop-nav a:hover { color: var(--text); text-shadow: 0 0 14px var(--accent-glow); }
+
+    .desktop-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: center; padding: 100px 0; min-height: 80vh; }
+    .desktop-hero-text h1 { font-size: clamp(3rem, 7vw, 5rem); font-weight: 700; line-height: 1.08; margin-bottom: 30px; letter-spacing: -.035em; filter: drop-shadow(0 0 40px rgba(76,201,240,.25)); padding-bottom: 8px; }
+    .desktop-hero-text p { font-size: 1.25rem; color: var(--muted); margin-bottom: 44px; max-width: 520px; line-height: 1.65; font-weight: 400; }
+
+    .desktop-main-btn {
+      background: linear-gradient(120deg, var(--accent), #69dbff);
+      color: #06121f; padding: 20px 44px; border-radius: 18px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700;
+      text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      box-shadow: 0 18px 44px -16px var(--accent-glow);
+      transition: all .4s cubic-bezier(.175,.885,.32,1.275); position: relative; overflow: hidden;
+    }
+    .desktop-main-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.14) 50%, transparent 60%); transform: translateX(-100%); transition: transform .6s; }
+    .desktop-main-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 24px 56px -16px var(--accent-glow); }
+    .desktop-main-btn:hover::after { transform: translateX(100%); }
+
+    .desktop-hero-image { perspective: 1200px; }
+    .desktop-hero-image img { width: 100%; border-radius: var(--radius-lg); border: 1px solid var(--line-hi); box-shadow: 0 40px 80px rgba(0,0,0,.8), 0 0 60px rgba(76,201,240,.16); transform: rotateY(-14deg) rotateX(5deg); transition: transform .6s cubic-bezier(.175,.885,.32,1.275); }
+    .desktop-hero-image img:hover { transform: rotateY(0) rotateX(0) scale(1.04); }
+
+    .desktop-section { padding: 104px 0; }
+    .desktop-section-title { font-size: clamp(2.4rem, 5vw, 3.4rem); font-weight: 700; text-align: center; margin-bottom: 12px; letter-spacing: -.03em; line-height: 1.2; padding-bottom: 4px; }
+    .desktop-section-subtitle { text-align: center; color: var(--muted); font-size: 1.1rem; font-weight: 400; margin-bottom: 60px; }
+
+    .desktop-features { background: linear-gradient(180deg, rgba(10,16,32,.5), rgba(10,20,40,.7)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .desktop-card {
+      background: var(--surface); border: 1px solid var(--line-hi); border-radius: var(--radius-lg);
+      padding: 40px; display: flex; align-items: flex-start; gap: 26px;
+      transition: all .4s; backdrop-filter: blur(12px); position: relative; overflow: hidden;
+    }
+    .desktop-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,209,102,.6), transparent); opacity: 0; transition: opacity .4s; }
+    .desktop-card:hover { border-color: rgba(76,201,240,.45); transform: translateY(-8px); background: var(--surface-hi); box-shadow: 0 26px 52px -20px rgba(0,0,0,.6); }
+    .desktop-card:hover::before { opacity: 1; }
+    .desktop-card-icon { width: 72px; height: 72px; border-radius: 20px; background: rgba(76,201,240,.1); display: flex; align-items: center; justify-content: center; padding: 16px; flex-shrink: 0; overflow: hidden; box-shadow: inset 0 0 24px rgba(76,201,240,.18); }
+    .desktop-card-icon img { width: 100%; height: 100%; filter: invert(70%) sepia(60%) saturate(400%) hue-rotate(160deg) brightness(120%); mix-blend-mode: screen; }
+    .desktop-card h3 { font-size: 1.55rem; margin-bottom: 12px; font-weight: 700; }
+    .desktop-card p { color: var(--muted); font-size: 1.02rem; line-height: 1.65; }
+
+    .wiki-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .wiki-card {
+      background: var(--surface); border: 1px solid var(--line-hi); border-radius: var(--radius-lg);
+      padding: 34px 28px; cursor: pointer; transition: all .35s; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .wiki-card:hover { background: var(--surface-hi); border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 22px 44px -20px var(--accent-glow); }
+    .wiki-card h3 { font-size: 1.25rem; margin-bottom: 10px; color: #a8e6ff; font-weight: 700; }
+    .wiki-card p { color: var(--muted); font-size: .95rem; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(3,6,12,.82); backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all .3s; padding: 20px; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content { background: var(--bg-2); border: 1px solid var(--accent); border-radius: var(--radius-lg); width: 100%; max-width: 620px; padding: 44px; position: relative; max-height: 82vh; overflow-y: auto; box-shadow: 0 30px 60px -20px rgba(76,201,240,.4); }
+    .modal-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: var(--muted); font-size: 2rem; cursor: pointer; transition: color .3s; line-height: 1; }
+    .modal-close:hover { color: var(--accent-2); }
+    .modal-content h2 { font-size: 1.8rem; margin-bottom: 20px; color: #a8e6ff; font-weight: 700; }
+    .modal-content p { color: var(--muted); font-size: 1.02rem; margin-bottom: 14px; line-height: 1.7; }
+    .modal-content ul { margin-left: 20px; color: var(--muted); margin-bottom: 20px; }
+    .modal-content li { margin-bottom: 10px; line-height: 1.6; }
+    .modal-content b { color: var(--text); }
+
+    .security-box {
+      background: linear-gradient(135deg, rgba(76,201,240,.12), rgba(255,209,102,.06));
+      border: 1px solid rgba(76,201,240,.4); border-radius: var(--radius-lg);
+      padding: 48px; display: flex; align-items: center; gap: 40px;
+      max-width: 900px; margin: 0 auto;
+    }
+    .security-icon { font-size: 4.4rem; filter: drop-shadow(0 0 22px var(--accent)); flex-shrink: 0; }
+    .security-text h3 { font-size: 1.8rem; margin-bottom: 14px; font-weight: 700; }
+    .security-text p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+
+    .faq-item { background: var(--surface); border: 1px solid var(--line-hi); border-radius: 16px; margin-bottom: 12px; overflow: hidden; backdrop-filter: blur(12px); transition: border-color .3s; }
+    .faq-item:hover { border-color: rgba(76,201,240,.35); }
+    .faq-question { width: 100%; text-align: left; background: none; border: none; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600; padding: 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .faq-question::after { content: '+'; font-size: 1.7rem; color: var(--accent-2); transition: transform .3s; flex-shrink: 0; }
+    .faq-item.active .faq-question::after { transform: rotate(45deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height .3s ease-out; padding: 0 24px; color: var(--muted); font-size: .98rem; line-height: 1.65; }
+    .faq-answer p { padding-bottom: 22px; }
+
+    .desktop-download { padding: 104px 0; text-align: center; }
+    .desktop-download-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap; }
+    .desktop-btn-platform {
+      background: var(--surface); border: 1px solid var(--line-hi); color: var(--text);
+      padding: 22px 42px; border-radius: var(--radius); text-decoration: none;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      transition: all .3s; backdrop-filter: blur(12px); cursor: pointer;
+    }
+    .desktop-btn-platform:hover { background: rgba(76,201,240,.12); border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 18px 36px -16px var(--accent-glow); }
+
+    @media (max-width: 900px) {
+      .desktop-header { display: none; }
+      .desktop-hero { grid-template-columns: 1fr; padding: 130px 0 60px; text-align: center; min-height: auto; }
+      .desktop-hero-text h1 { font-size: clamp(2.6rem, 9vw, 3.4rem); margin-bottom: 22px; }
+      .desktop-hero-text p { font-size: 1.05rem; margin: 0 auto 32px; }
+      .desktop-main-btn { width: 100%; max-width: 320px; padding: 18px 24px; font-size: 1rem; }
+      .desktop-hero-image { display: none; }
+      .desktop-section { padding: 64px 0; }
+      .desktop-section-title { font-size: 2.2rem; }
+      .desktop-grid { grid-template-columns: 1fr; }
+      .wiki-grid { grid-template-columns: 1fr; }
+      .security-box { flex-direction: column; text-align: center; padding: 34px; gap: 22px; }
+      .desktop-download-buttons { flex-direction: column; align-items: center; }
+      .desktop-btn-platform { width: 100%; max-width: 320px; padding: 20px; font-size: 1rem; }
+    }
+
+    /* =========================================
+       ПАСХАЛКА
+       ========================================= */
+    #easterEgg { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity .8s; padding: 24px; text-align: center; }
+    #easterEgg.active { opacity: 1; visibility: visible; }
+    .egg-text { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 700; color: var(--accent-2); text-shadow: 0 0 40px var(--accent-2); margin-bottom: 20px; animation: shake .5s infinite; letter-spacing: -.02em; }
+    .egg-sub { font-size: 1.1rem; color: #fff; margin-bottom: 40px; }
+    @keyframes shake { 0%{transform:translate(1px,1px) rotate(0)} 25%{transform:translate(-2px,-1px) rotate(-1deg)} 50%{transform:translate(2px,2px) rotate(1deg)} 75%{transform:translate(-1px,1px) rotate(-1deg)} 100%{transform:translate(1px,-2px) rotate(0)} }
+  </style>
+</head>
+<body>
+
+  <canvas id="snowCanvas"></canvas>
+  <svg id="garland" preserveAspectRatio="none" viewBox="0 0 1200 40" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,10 Q150,40 300,10 T600,10 T900,10 T1200,10" fill="none" stroke="rgba(255,209,102,0.2)" stroke-width="2"/>
+    <g fill="#ffd166" filter="drop-shadow(0 0 6px #ffd166)">
+      <circle cx="100" cy="24" r="3.5"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></circle>
+      <circle cx="250" cy="20" r="3.5"><animate attributeName="opacity" values="0.4;1;0.4" dur="2.2s" repeatCount="indefinite"/></circle>
+      <circle cx="400" cy="18" r="3.5"><animate attributeName="opacity" values="1;0.5;1" dur="1.8s" repeatCount="indefinite"/></circle>
+      <circle cx="550" cy="20" r="3.5"><animate attributeName="opacity" values="0.5;1;0.5" dur="2.4s" repeatCount="indefinite"/></circle>
+      <circle cx="700" cy="18" r="3.5"><animate attributeName="opacity" values="1;0.4;1" dur="2.1s" repeatCount="indefinite"/></circle>
+      <circle cx="850" cy="20" r="3.5"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.9s" repeatCount="indefinite"/></circle>
+      <circle cx="1000" cy="24" r="3.5"><animate attributeName="opacity" values="1;0.5;1" dur="2.3s" repeatCount="indefinite"/></circle>
+      <circle cx="1100" cy="22" r="3.5"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
+    </g>
+  </svg>
+
+  <div class="ambient-bg"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- SPLASH -->
+  <div id="splashScreen">
+    <img src="logo.png" alt="Logo" class="splash-logo" id="secretLogo">
+    <h1 class="splash-title gradient-text">EnvyClient</h1>
+    <p class="splash-sub">❄️ Выберите ваше устройство ❄️</p>
+    <div class="splash-buttons">
+      <button class="splash-btn" onclick="showSite('desktop')">
+        <svg viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></svg>
+        Компьютер
+      </button>
+      <button class="splash-btn" onclick="showSite('mobile')">
+        <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+        Телефон
+      </button>
+    </div>
+  </div>
+
+  <!-- ПАСХАЛКА -->
+  <div id="easterEgg">
+    <div class="egg-text">С НОВЫМ ГОДОМ!</div>
+    <div class="egg-sub">Шутка. Ты нашел секрет. Хорошего катания! 🎄</div>
+    <button class="splash-btn" onclick="document.getElementById('easterEgg').classList.remove('active')" style="padding: 15px 30px; font-size: 1rem; flex: none; max-width: none;">Вернуться</button>
+  </div>
+
+  <!-- МОБИЛЬНАЯ ВЕРСИЯ -->
+  <div id="mobileSite" class="hidden">
+    <nav class="mobile-nav-menu" id="navMenu">
+      <h2 style="color:#a8e6ff; margin-bottom:20px; font-family:'Space Grotesk'; font-weight:700;">Меню</h2>
+      <a href="#m-hero" onclick="toggleMenu()">Главная</a>
+      <a href="#m-gallery" onclick="toggleMenu()">Скриншоты</a>
+      <a href="#m-features" onclick="toggleMenu()">Функционал</a>
+      <a href="#m-wiki" onclick="toggleMenu()">Гайды</a>
+      <a href="#m-faq" onclick="toggleMenu()">FAQ</a>
+      <a href="#" onclick="toggleMenu(); resetPlatform();" style="margin-top:20px; color: var(--accent-2);">Сменить устройство</a>
+    </nav>
+
+    <header class="mobile-header">
+      <div class="mobile-header-inner">
+        <div class="mobile-header-left">
+          <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+          <a href="#" class="logo" onclick="logoClick(event)"><img src="logo.png" alt="Logo"> EnvyClient</a>
+        </div>
+        <a href="https://t.me/EnvyClient1337" target="_blank" class="header-btn">Telegram</a>
+      </div>
+    </header>
+
+    <section class="mobile-hero mobile-container" id="m-hero">
+      <div class="badge fade-up"><img src="images.png" alt="DDNet"> DDNet</div>
+      <h1 class="gradient-text fade-up">BEST MOBILE<br>CLIENT</h1>
+      <p class="fade-up">Лучший чит для DDNet на телефоне</p>
+      <a href="#m-download" class="main-btn fade-up">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Скачать
+      </a>
+    </section>
+
+    <section class="mobile-section mobile-container" id="m-gallery">
+      <h2 class="mobile-section-title gradient-text fade-up">Галерея</h2>
+      <div class="gallery-tabs fade-up">
+        <button class="tab-btn active" onclick="changeTab(this, 'screen1.png')">Меню</button>
+        <button class="tab-btn" onclick="changeTab(this, 'screen2.png')">Avoid</button>
+        <button class="tab-btn" onclick="changeTab(this, 'screen3.png')">TAS</button>
+        <button class="tab-btn" onclick="changeTab(this, 'screen5.png')">Aimbot</button>
+        <button class="tab-btn" onclick="changeTab(this, 'screen4.png')">Visuals</button>
+      </div>
+      <div class="gallery-display fade-up"><img src="screen1.png" id="mainScreenImage" alt="Screen"></div>
+    </section>
+
+    <section class="mobile-section mobile-container" id="m-features">
+      <h2 class="mobile-section-title gradient-text fade-up">Функционал</h2>
+      <div class="mobile-grid">
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="aim.png"></div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="av.png"></div><h3>Avoid System</h3><p>Авто-спасение от опасных тайлов. Режимы Legit и Blatant.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="tas.png"></div><h3>TAS</h3><p>Запись, пауза, воспроизведение и импорт .tas файлов.</p></div>
+        <div class="mobile-card fade-up"><div class="mobile-card-icon"><img src="vis.png"></div><h3>Visuals</h3><p>Ушки, хвост, крылья, кагуне, эффекты и анимации AFK.</p></div>
+      </div>
+    </section>
+
+    <section class="mobile-section mobile-container" id="m-wiki">
+      <h2 class="mobile-section-title gradient-text fade-up">Гайды</h2>
+      <div class="wiki-grid fade-up">
+        <div class="wiki-card" onclick="openModal('install')"><h3>Установка</h3><p>Как правильно запустить</p></div>
+        <div class="wiki-card" onclick="openModal('aimbot')"><h3>Настройка Aimbot</h3><p>Идеальные настройки</p></div>
+        <div class="wiki-card" onclick="openModal('avoid')"><h3>Что такое Avoid</h3><p>Спасение от заморозки</p></div>
+      </div>
+    </section>
+
+    <section class="mobile-section mobile-container">
+      <div class="security-box fade-up" style="padding: 30px;">
+        <div class="security-icon">🛡️</div>
+        <div class="security-text" style="text-align: center;">
+          <h3>Безопасность</h3>
+          <p style="font-size: 0.95rem;">Если антивирус ругается, добавьте папку с клиентом в исключения. Это нормальная реакция на любой софт.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mobile-section mobile-container" id="m-faq">
+      <h2 class="mobile-section-title gradient-text fade-up">FAQ</h2>
+      <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Это безопасно?</button><div class="faq-answer"><p>Да, мы не собираем данные. Единственный нюанс — антивирусы.</p></div></div>
+      <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Будут ли обновления?</button><div class="faq-answer"><p>Конечно, мы постоянно работаем над обходами и новыми фичами. Следите за ТГ-каналом.</p></div></div>
+    </section>
+
+    <section class="mobile-section mobile-container" id="m-download">
+      <h2 class="mobile-section-title gradient-text fade-up">Скачать</h2>
+      <div class="mobile-download-buttons fade-up">
+        <button onclick="downloadFile('https://disk.yandex.ru/d/xpsiTlqnwOsW7A')" class="mobile-btn-platform"><span>Windows</span><span>💻</span></button>
+        <button onclick="downloadFile('https://disk.yandex.ru/d/Uo0OwXJnORuWxg')" class="mobile-btn-platform"><span>Android</span><span>📱</span></button>
+        <button onclick="downloadFile('https://disk.yandex.ru/d/2btNkyZ6Wn0Tog')" class="mobile-btn-platform"><span>Linux</span><span>🐧</span></button>
+      </div>
+    </section>
+
+    <footer style="text-align:center; padding: 40px 0; border-top: 1px solid var(--line); margin-top: 40px;">
+      <div style="color:var(--muted); margin-bottom: 20px; font-weight: 500;">Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:#a8e6ff; text-decoration:none; font-weight:700;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:#a8e6ff; text-decoration:none; font-weight:700;">@wakizashu</a></div>
+    </footer>
+  </div>
+
+  <!-- ПК ВЕРСИЯ -->
+  <div id="desktopSite" class="hidden">
+    <header class="desktop-header">
+      <div class="container desktop-header-inner">
+        <a href="#" class="logo" style="font-size: 1.4rem;" onclick="logoClick(event)">
+          <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 12px; box-shadow: 0 0 20px var(--accent-glow);"> EnvyClient
+        </a>
+        <nav class="desktop-nav">
+          <a href="#d-features">Возможности</a>
+          <a href="#d-wiki">Гайды</a>
+          <a href="#d-faq">FAQ</a>
+          <a href="#d-download">Скачать</a>
+          <a href="#" onclick="resetPlatform()" style="color: var(--accent-2);">Сменить устройство</a>
+        </nav>
+        <a href="https://t.me/EnvyClient1337" target="_blank" class="header-btn" style="font-size: 1rem; padding: 12px 24px; border-radius: 14px;">Telegram</a>
+      </div>
+    </header>
+
+    <section class="container desktop-hero">
+      <div class="desktop-hero-text">
+        <div class="badge fade-up" style="margin-bottom: 30px;"><img src="images.png" alt="DDNet"> DDNet Client</div>
+        <h1 class="gradient-text fade-up">HAPPY NEW<br>YEAR CLIENT</h1>
+        <p class="fade-up">Хороший чит для DDNet на компьютере. Продвинутый Aimbot, система Avoid и огромное количество визуальных настроек.</p>
+        <div class="fade-up">
+          <a href="#d-download" class="desktop-main-btn">Скачать клиент <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></a>
+        </div>
+      </div>
+      <div class="desktop-hero-image fade-up"><img src="screen1.png" alt="EnvyClient"></div>
+    </section>
+
+    <section class="desktop-features" id="d-features">
+      <div class="container">
+        <h2 class="gradient-text fade-up desktop-section-title">Функционал</h2>
+        <p class="fade-up desktop-section-subtitle">Всё, что нужно для доминации</p>
+        <div class="desktop-grid">
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="aim.png"></div><div><h3>Aimbot</h3><p>Точный аим с настройкой FOV, Silent Aim, Perfect Silent и поддержкой всех видов оружия.</p></div></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="av.png"></div><div><h3>Avoid System</h3><p>Умная система спасения от опасных тайлов. Режимы Legit и Blatant.</p></div></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="tas.png"></div><div><h3>TAS</h3><p>Запись, пауза, воспроизведение, библиотека записей и импорт .tas файлов.</p></div></div>
+          <div class="desktop-card fade-up"><div class="desktop-card-icon"><img src="vis.png"></div><div><h3>Visuals</h3><p>Ушки, хвост, крылья, кагуне, эффекты, кастомные лица и анимации AFK.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="desktop-section" id="d-wiki">
+      <div class="container">
+        <h2 class="gradient-text fade-up desktop-section-title">База знаний</h2>
+        <p class="fade-up desktop-section-subtitle">Всё, что нужно знать перед началом</p>
+        <div class="wiki-grid fade-up">
+          <div class="wiki-card" onclick="openModal('install')"><h3>Установка</h3><p>Как правильно запустить</p></div>
+          <div class="wiki-card" onclick="openModal('aimbot')"><h3>Настройка Aimbot</h3><p>Идеальные настройки</p></div>
+          <div class="wiki-card" onclick="openModal('avoid')"><h3>Что такое Avoid</h3><p>Спасение от заморозки</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="desktop-section">
+      <div class="container">
+        <div class="security-box fade-up">
+          <div class="security-icon">🛡️</div>
+          <div class="security-text">
+            <h3>Ваша безопасность</h3>
+            <p>Если ваш антивирус ругается на файл, не пугайтесь. Любой софт, взаимодействующий с памятью игры, вызывает подозрения. Добавьте папку с клиентом в исключения антивируса.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="desktop-section" id="d-faq">
+      <div class="container" style="max-width: 800px;">
+        <h2 class="gradient-text fade-up desktop-section-title">FAQ</h2>
+        <p class="fade-up desktop-section-subtitle">Ответы на частые вопросы</p>
+        <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Это безопасно?</button><div class="faq-answer"><p>Да, клиент не собирает ваши данные. Единственный нюанс — реакция антивирусов (читайте блок выше).</p></div></div>
+        <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Будут ли обновления?</button><div class="faq-answer"><p>Да, мы регулярно обновляем клиент и обходим новые защиты. Все новости в ТГ-канале.</p></div></div>
+        <div class="faq-item fade-up"><button class="faq-question" onclick="toggleFaq(this)">Можно ли получить бан?</button><div class="faq-answer"><p>Как и с любым софтом, риск есть всегда. Однако наша система избегает палевных действий. Используйте с умом.</p></div></div>
+      </div>
+    </section>
+
+    <section class="desktop-download" id="d-download">
+      <div class="container">
+        <h2 class="gradient-text fade-up desktop-section-title" style="margin-bottom: 20px;">Скачать</h2>
+        <p class="fade-up" style="color: var(--muted); font-size: 1.1rem; font-weight: 400;">Выберите вашу операционную систему</p>
+        <div class="desktop-download-buttons fade-up">
+          <button onclick="downloadFile('https://disk.yandex.ru/d/xpsiTlqnwOsW7A')" class="desktop-btn-platform"><span style="font-size: 1.7rem;">💻</span> Windows (.zip)</button>
+          <button onclick="downloadFile('https://disk.yandex.ru/d/Uo0OwXJnORuWxg')" class="desktop-btn-platform"><span style="font-size: 1.7rem;">📱</span> Android (.apk)</button>
+          <button onclick="downloadFile('https://disk.yandex.ru/d/2btNkyZ6Wn0Tog')" class="desktop-btn-platform"><span style="font-size: 1.7rem;">🐧</span> Linux (.tar.gz)</button>
+        </div>
+        <div class="fade-up" style="margin-top: 60px; color: var(--muted); font-weight: 500;">
+          Разработчики: <a href="https://t.me/k0rol3vsk1" style="color:#a8e6ff; text-decoration:none; font-weight:700;">@k0rol3vsk1</a> &bull; <a href="https://t.me/wakizashu" style="color:#a8e6ff; text-decoration:none; font-weight:700;">@wakizashu</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- МОДАЛКА -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal(event)">&times;</button>
+      <div id="modalText"></div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================
+    // СНЕГ
+    // =========================================
+    const canvas = document.getElementById('snowCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let flakes = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Flake {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.r = Math.random() * 2.5 + 0.5;
+        this.speedY = Math.random() * 1 + 0.5;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.opacity = Math.random() * 0.6 + 0.2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y > height) {
+          this.y = -10;
+          this.x = Math.random() * width;
+        }
+        if (this.x > width) this.x = 0;
+        if (this.x < 0) this.x = width;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 120; i++) {
+      flakes.push(new Flake());
+    }
+
+    function animateSnow() {
+      ctx.clearRect(0, 0, width, height);
+      flakes.forEach(f => { f.update(); f.draw(); });
+      requestAnimationFrame(animateSnow);
+    }
+    animateSnow();
+
+    // =========================================
+    // ЛОГИКА САЙТА
+    // =========================================
+    async function downloadFile(url) {
+      try {
+        const response = await fetch(`https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=${url}`);
+        if (!response.ok) throw new Error('Ошибка сети');
+        const data = await response.json();
+        const link = document.createElement('a');
+        link.href = data.href;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        window.open(url + '?download=1', '_blank');
+      }
+    }
+
+    function showSite(type) {
+      document.getElementById('splashScreen').classList.add('hidden');
+      document.getElementById('desktopSite').classList.add('hidden');
+      document.getElementById('mobileSite').classList.add('hidden');
+      if (type === 'mobile') document.getElementById('mobileSite').classList.remove('hidden');
+      else document.getElementById('desktopSite').classList.remove('hidden');
+      setTimeout(initAnimations, 100);
+    }
+
+    function resetPlatform() {
+      document.getElementById('mobileSite').classList.add('hidden');
+      document.getElementById('desktopSite').classList.add('hidden');
+      document.getElementById('splashScreen').classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function toggleMenu() { document.getElementById('navMenu').classList.toggle('active'); }
+
+    function changeTab(btn, imageSrc) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const img = document.getElementById('mainScreenImage');
+      img.style.opacity = 0;
+      setTimeout(() => { img.src = imageSrc; img.style.opacity = 1; }, 200);
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const answer = btn.nextElementSibling;
+      const isActive = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(el => {
+        el.classList.remove('active');
+        el.querySelector('.faq-answer').style.maxHeight = null;
+      });
+      if (!isActive) {
+        item.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + "px";
+      }
+    }
+
+    const wikiContent = {
+      'install': `
+        <h2>Как установить EnvyClient</h2>
+        <p>Установка максимально простая и не требует инсталляторов:</p>
+        <ul>
+          <li>Скачайте архив для вашей ОС.</li>
+          <li>Распакуйте архив в любую удобную папку.</li>
+          <li>Запустите файл <b>EnvyClient.exe</b> (или apk на телефоне).</li>
+        </ul>
+        <p><i>Примечание: если Windows SmartScreen блокирует запуск, нажмите "Подробнее" -> "Выполнить в любом случае".</i></p>
+      `,
+      'aimbot': `
+        <h2>Идеальная настройка Aimbot</h2>
+        <p>Чтобы не получить бан и играть комфортно, используйте режим <b>Legit</b>:</p>
+        <ul>
+          <li><b>FOV:</b> 15-30 градусов (не ставьте на весь экран).</li>
+          <li><b>Smooth:</b> 5-10 (плавность наведения).</li>
+          <li><b>Hitbox:</b> Лучше всего использовать "Body" или "Nearest".</li>
+        </ul>
+      `,
+      'avoid': `
+        <h2>Что такое Avoid System?</h2>
+        <p>Это система, которая автоматически спасает вас от заморозки (frozen).</p>
+        <ul>
+          <li><b>Legit Mode:</b> Делает микро-движения, которые выглядят как обычная игра.</li>
+          <li><b>Blatant Mode:</b> Мгновенно телепортирует или совершает идеальные движения.</li>
+          <li><b>Rescue Aim:</b> Позволяет моментально прицелиться в того, кто вас заморозил, и убить его.</li>
+        </ul>
+      `
+    };
+
+    function openModal(type) {
+      document.getElementById('modalText').innerHTML = wikiContent[type];
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if(e) e.preventDefault();
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    const cursorGlow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', (e) => {
+      cursorGlow.style.left = e.clientX + 'px';
+      cursorGlow.style.top = e.clientY + 'px';
+    });
+
+    function initAnimations() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }
+    initAnimations();
+
+    if (window.innerWidth > 900) {
+      const cards = document.querySelectorAll('.desktop-card, .desktop-hero-image img');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left, y = e.clientY - rect.top;
+          const centerX = rect.width / 2, centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -5;
+          const rotateY = ((x - centerX) / centerX) * 5;
+          if (card.tagName === 'IMG') card.style.transform = `rotateY(${rotateY - 10}deg) rotateX(${rotateX + 5}deg) scale(1.02)`;
+          else card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          if (card.tagName === 'IMG') card.style.transform = `rotateY(-10deg) rotateX(5deg) scale(1)`;
+          else card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0)`;
+        });
+      });
+    }
+
+    let logoClicks = 0;
+    function logoClick(e) {
+      if (e) e.preventDefault();
+      logoClicks++;
+      if (logoClicks >= 5) {
+        document.getElementById('easterEgg').classList.add('active');
+        logoClicks = 0;
+        setTimeout(() => { document.getElementById('easterEgg').classList.remove('active'); }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>
